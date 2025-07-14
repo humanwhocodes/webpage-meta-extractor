@@ -7,6 +7,8 @@ This project is a Node.js library .
 - `src` - Contains all source code
 - `tests` - Comprehensive test suite using Mocha
 
+Test files that correspond to source files are named similary, e.g, `tests/webpage-meta-extractor.test.js` for `src/webpage-meta-extractor.js`.
+
 ## Code Style and Patterns
 
 ### JSDoc Comments
@@ -35,13 +37,15 @@ These are also used by TypeScript for type checking.
 - JSDoc for type annotations
 - TypeScript for type checking
 
-## Testing Requirements
+## Testing
 
+- Whenever changes are made to code, inspect the tests for necessary changes.
 - All new methods need comprehensive tests
 - Test both success and error paths
-- Verify exact error messages
+- Error messages using regular expressions
 - Test async behavior and concurrent operations
 - Mock external dependencies appropriately
 - Run `npx mocha <filename>` to execute tests for specific files; always do this until all tests pass for this file.
 - Run `npm test` to run all tests
 - Do not change the working directory when running tests
+- Never use the `assert()` function, always use specific assertion methods like `assert.strictEqual()`, `assert.throws()`, etc.

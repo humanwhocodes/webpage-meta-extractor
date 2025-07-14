@@ -3,13 +3,13 @@
  */
 export class WebpageMeta {
 	/**
-	 * Open Graph meta tags.
+	 * Open Graph meta tags. Keys are stripped of the 'og:' prefix.
 	 * @type {Map<string, string[]>}
 	 */
 	openGraph = new Map();
 
 	/**
-	 * Twitter Card meta tags.
+	 * Twitter Card meta tags. Keys are stripped of the 'twitter:' prefix.
 	 * @type {Map<string, string[]>}
 	 */
 	twitterCard = new Map();
@@ -60,12 +60,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The title if found, otherwise undefined.
 	 */
 	get title() {
-		const og = this.openGraph.get("og:title");
+		const og = this.openGraph.get("title");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("twitter:title");
+		const tw = this.twitterCard.get("title");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -93,12 +93,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The description if found, otherwise undefined.
 	 */
 	get description() {
-		const og = this.openGraph.get("og:description");
+		const og = this.openGraph.get("description");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("twitter:description");
+		const tw = this.twitterCard.get("description");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -116,12 +116,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The image URL if found, otherwise undefined.
 	 */
 	get image() {
-		const og = this.openGraph.get("og:image");
+		const og = this.openGraph.get("image");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("twitter:image");
+		const tw = this.twitterCard.get("image");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -139,12 +139,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The URL if found, otherwise undefined.
 	 */
 	get url() {
-		const og = this.openGraph.get("og:url");
+		const og = this.openGraph.get("url");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("twitter:url");
+		const tw = this.twitterCard.get("url");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -162,12 +162,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The site name if found, otherwise undefined.
 	 */
 	get siteName() {
-		const og = this.openGraph.get("og:site_name");
+		const og = this.openGraph.get("site_name");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("twitter:site");
+		const tw = this.twitterCard.get("site");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -229,7 +229,9 @@ export class WebpageMetaExtractor {
 	 */
 	extract(document) {
 		if (!document || typeof document.querySelectorAll !== "function") {
-			throw new TypeError("Expected a DOM Document with querySelectorAll.");
+			throw new TypeError(
+				"Expected a DOM Document with querySelectorAll.",
+			);
 		}
 
 		const OG_PREFIX = "og:";
@@ -268,18 +270,20 @@ export class WebpageMetaExtractor {
 
 			if (property && content) {
 				if (property.startsWith(OG_PREFIX)) {
-					if (!result.openGraph.has(property)) {
-						result.openGraph.set(property, []);
+					const key = property.slice(OG_PREFIX.length);
+					if (!result.openGraph.has(key)) {
+						result.openGraph.set(key, []);
 					}
-					const ogList = result.openGraph.get(property);
+					const ogList = result.openGraph.get(key);
 					if (ogList) {
 						ogList.push(content);
 					}
 				} else if (property.startsWith(TWITTER_PREFIX)) {
-					if (!result.twitterCard.has(property)) {
-						result.twitterCard.set(property, []);
+					const key = property.slice(TWITTER_PREFIX.length);
+					if (!result.twitterCard.has(key)) {
+						result.twitterCard.set(key, []);
 					}
-					const twList = result.twitterCard.get(property);
+					const twList = result.twitterCard.get(key);
 					if (twList) {
 						twList.push(content);
 					}
@@ -289,18 +293,20 @@ export class WebpageMetaExtractor {
 			// Also handle Twitter Card and Open Graph via name attribute
 			if (name && content) {
 				if (name.startsWith(OG_PREFIX)) {
-					if (!result.openGraph.has(name)) {
-						result.openGraph.set(name, []);
+					const key = name.slice(OG_PREFIX.length);
+					if (!result.openGraph.has(key)) {
+						result.openGraph.set(key, []);
 					}
-					const ogList = result.openGraph.get(name);
+					const ogList = result.openGraph.get(key);
 					if (ogList) {
 						ogList.push(content);
 					}
 				} else if (name.startsWith(TWITTER_PREFIX)) {
-					if (!result.twitterCard.has(name)) {
-						result.twitterCard.set(name, []);
+					const key = name.slice(TWITTER_PREFIX.length);
+					if (!result.twitterCard.has(key)) {
+						result.twitterCard.set(key, []);
 					}
-					const twList = result.twitterCard.get(name);
+					const twList = result.twitterCard.get(key);
 					if (twList) {
 						twList.push(content);
 					}
@@ -308,7 +314,12 @@ export class WebpageMetaExtractor {
 			}
 
 			// Only store meta tags that are not Open Graph or Twitter Card in meta
-			if (name && content && !name.startsWith(OG_PREFIX) && !name.startsWith(TWITTER_PREFIX)) {
+			if (
+				name &&
+				content &&
+				!name.startsWith(OG_PREFIX) &&
+				!name.startsWith(TWITTER_PREFIX)
+			) {
 				if (!result.meta.has(name)) {
 					result.meta.set(name, []);
 				}
@@ -319,7 +330,12 @@ export class WebpageMetaExtractor {
 			}
 
 			// Also store non-OG/non-Twitter property attributes in meta
-			if (property && content && !property.startsWith(OG_PREFIX) && !property.startsWith(TWITTER_PREFIX)) {
+			if (
+				property &&
+				content &&
+				!property.startsWith(OG_PREFIX) &&
+				!property.startsWith(TWITTER_PREFIX)
+			) {
 				if (!result.meta.has(property)) {
 					result.meta.set(property, []);
 				}
