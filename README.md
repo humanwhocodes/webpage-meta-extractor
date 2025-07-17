@@ -63,6 +63,13 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
 - `image` — Page image URL (string or undefined)
 - `url` — Canonical URL (string or undefined)
 - `siteName` — Site name (string or undefined)
+- `images` — Array of all Open Graph images found on the page. Each item is a `MetaImage` object with the following properties:
+    - `url` (string, required): The image URL (from `og:image` or `og:image:url`)
+    - `secureUrl` (string, optional): Secure image URL (`og:image:secure_url`)
+    - `type` (string, optional): Image MIME type (`og:image:type`)
+    - `width` (string, optional): Image width in pixels (`og:image:width`)
+    - `height` (string, optional): Image height in pixels (`og:image:height`)
+    - `alt` (string, optional): Image alt text (`og:image:alt`)
 
 #### Error Handling
 
@@ -79,6 +86,43 @@ const html = `
 const dom = new JSDOM(html);
 const meta = extractor.extract(dom.window.document);
 console.log(meta.feeds); // [ { title: 'RSS', type: 'application/rss+xml', href: '/feed.xml' } ]
+```
+
+##### Example: Extracting all Open Graph images
+
+```js
+const html = `
+<html><head>
+  <meta property="og:image" content="img1.jpg" />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="400" />
+  <meta property="og:image:alt" content="First image" />
+  <meta property="og:image:url" content="img2.jpg" />
+  <meta property="og:image:width" content="800" />
+  <meta property="og:image:alt" content="Second image" />
+</head></html>
+`;
+const dom = new JSDOM(html);
+const meta = extractor.extract(dom.window.document);
+console.log(meta.images);
+// [
+//   {
+//     url: "img1.jpg",
+//     secureUrl: undefined,
+//     type: undefined,
+//     width: "600",
+//     height: "400",
+//     alt: "First image"
+//   },
+//   {
+//     url: "img2.jpg",
+//     secureUrl: undefined,
+//     type: undefined,
+//     width: "800",
+//     height: undefined,
+//     alt: "Second image"
+//   }
+// ]
 ```
 
 ## License

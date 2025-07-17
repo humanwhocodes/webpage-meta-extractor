@@ -40,7 +40,7 @@ These are also used by TypeScript for type checking.
 ## Testing
 
 - Whenever changes are made to code, inspect the tests for necessary changes.
-- All new methods need comprehensive tests
+- All new functionality need comprehensive tests
 - Test both success and error paths
 - Error messages using regular expressions
 - Test async behavior and concurrent operations

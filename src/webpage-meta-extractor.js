@@ -33,6 +33,12 @@ export class WebpageMeta {
 	feeds = [];
 
 	/**
+	 * All Open Graph images found on the page.
+	 * @type {MetaImage[]}
+	 */
+	images = [];
+
+	/**
 	 * Creates a new instance of WebpageMeta.
 	 */
 	constructor() {}
@@ -217,6 +223,66 @@ export class Feed {
 }
 
 /**
+ * Represents an Open Graph image and its associated meta information.
+ */
+export class MetaImage {
+	/**
+	 * The image URL (required).
+	 * @type {string}
+	 */
+	url;
+
+	/**
+	 * The image secure URL (optional).
+	 * @type {string|undefined}
+	 */
+	secureUrl;
+
+	/**
+	 * The image type (optional).
+	 * @type {string|undefined}
+	 */
+	type;
+
+	/**
+	 * The image width (optional).
+	 * @type {string|undefined}
+	 */
+	width;
+
+	/**
+	 * The image height (optional).
+	 * @type {string|undefined}
+	 */
+	height;
+
+	/**
+	 * The image alt text (optional).
+	 * @type {string|undefined}
+	 */
+	alt;
+
+	/**
+	 * Creates a new MetaImage instance.
+	 * @param {object} params The image parameters.
+	 * @param {string} params.url The image URL.
+	 * @param {string} [params.secureUrl] The secure image URL.
+	 * @param {string} [params.type] The image type.
+	 * @param {string} [params.width] The image width.
+	 * @param {string} [params.height] The image height.
+	 * @param {string} [params.alt] The image alt text.
+	 */
+	constructor({ url, secureUrl, type, width, height, alt }) {
+		this.url = url;
+		this.secureUrl = secureUrl;
+		this.type = type;
+		this.width = width;
+		this.height = height;
+		this.alt = alt;
+	}
+}
+
+/**
  * WebpageMetaExtractor extracts Open Graph, Twitter Card, and other meta tag information from a DOM Document.
  */
 export class WebpageMetaExtractor {
@@ -262,7 +328,11 @@ export class WebpageMetaExtractor {
 			}
 		}
 
+		// Temporary storage for grouping og:image meta fields by index
+		const ogImageMap = new Map();
+
 		// Extract Open Graph and Twitter Card meta tags
+		let currentImageObj = null;
 		for (const tag of metaTags) {
 			const property = tag.getAttribute("property");
 			const name = tag.getAttribute("name");
@@ -343,6 +413,41 @@ export class WebpageMetaExtractor {
 				if (metaList) {
 					metaList.push(content);
 				}
+			}
+
+			// Collect Open Graph image meta fields for images array (Open Graph spec)
+			if (property && content && property.startsWith(OG_PREFIX)) {
+				const key = property.slice(OG_PREFIX.length);
+				if (key === "image" || key === "image:url") {
+					// Start a new image object
+					currentImageObj = { url: content };
+					result.images.push(new MetaImage(currentImageObj));
+				} else if (key.startsWith("image:")) {
+					// Structured property for the most recent image
+					if (result.images.length > 0) {
+						const lastImage =
+							result.images[result.images.length - 1];
+						const subKey = key.slice("image:".length);
+						if (subKey === "secure_url") {
+							lastImage.secureUrl = content;
+						} else if (subKey === "type") {
+							lastImage.type = content;
+						} else if (subKey === "width") {
+							lastImage.width = content;
+						} else if (subKey === "height") {
+							lastImage.height = content;
+						} else if (subKey === "alt") {
+							lastImage.alt = content;
+						}
+					}
+				}
+			}
+		}
+
+		// After all meta tags, create MetaImage instances for each og:image
+		for (const imageObj of ogImageMap.values()) {
+			if (imageObj.url) {
+				result.images.push(new MetaImage(imageObj));
 			}
 		}
 
