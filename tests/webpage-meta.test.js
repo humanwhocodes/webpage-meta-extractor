@@ -1,6 +1,19 @@
+/**
+ * @fileoverview Tests for WebpageMeta class and its properties.
+ * @author Nicholas C. Zakas
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
 import assert from "assert";
 import { JSDOM } from "jsdom";
 import { WebpageMetaExtractor } from "../src/webpage-meta-extractor.js";
+
+//-----------------------------------------------------------------------------
+// Tests
+//-----------------------------------------------------------------------------
 
 describe("WebpageMeta property getters", () => {
 	let extractor;

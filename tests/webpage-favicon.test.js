@@ -1,5 +1,18 @@
+/**
+ * @fileoverview Tests for WebpageFavicon class.
+ * @author Nicholas C. Zakas
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
 import assert from "assert";
 import { WebpageFavicon } from "../src/webpage-favicon.js";
+
+//-----------------------------------------------------------------------------
+// Tests
+//-----------------------------------------------------------------------------
 
 describe("WebpageFavicon", () => {
 	it("should create a favicon with correct properties", () => {

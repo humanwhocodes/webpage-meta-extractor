@@ -1,5 +1,18 @@
+/**
+ * @fileoverview Tests for WebpageFeed class.
+ * @author Nicholas C. Zakas
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
 import assert from "assert";
 import { WebpageFeed } from "../src/webpage-feed.js";
+
+//-----------------------------------------------------------------------------
+// Tests
+//-----------------------------------------------------------------------------
 
 describe("WebpageFeed", () => {
 	it("should create a feed with correct properties", () => {

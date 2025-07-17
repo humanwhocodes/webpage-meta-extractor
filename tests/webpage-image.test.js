@@ -1,5 +1,18 @@
+/**
+ * @fileoverview Tests for WebpageImage class.
+ * @author Nicholas C. Zakas
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
 import assert from "assert";
 import { WebpageImage } from "../src/webpage-image.js";
+
+//-----------------------------------------------------------------------------
+// Tests
+//-----------------------------------------------------------------------------
 
 describe("WebpageImage", () => {
 	it("should create an image with correct properties", () => {
