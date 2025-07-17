@@ -4,7 +4,7 @@ applyTo: "**/*.js,**/*.ts"
 
 # JavaScript/TypeScript Coding Style Guide
 
-## File Structure
+## Source File Structure
 
 The overall file structure should follow this format:
 
@@ -47,6 +47,51 @@ The overall file structure should follow this format:
 //-----------------------------------------------------------------------------
 
 // Export statements should be grouped logically, e.g., classes, functions, constants, etc.
+```
+
+## Test File Structure
+
+Test files should follow a similar structure to source files, but with a focus on testing functionality:
+
+```javascript
+/**
+ * @fileoverview Brief description of the file.
+ * @author Your Name
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+// Import statements should be grouped logically, e.g., third-party libraries, local modules, etc.
+// Omit this section if there are no imports.
+
+//-----------------------------------------------------------------------------
+// Types
+//-----------------------------------------------------------------------------
+
+// Type declarations should be grouped logically, e.g., interfaces, type aliases, etc.
+// Omit this section if there are no type declarations.
+
+//-----------------------------------------------------------------------------
+// Data
+//-----------------------------------------------------------------------------
+
+// Data declarations should be grouped logically, e.g., constants, configuration, etc.
+// Omit this section if there are no data declarations.
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+// Helper functions should be grouped logically, e.g., internal-only utility functions
+// Omit this section if there are no helper functions.
+
+//-----------------------------------------------------------------------------
+// Tests
+//-----------------------------------------------------------------------------
+
+// The actual tests should be grouped logically, e.g., describe blocks, it blocks, etc.
 ```
 
 ## Indentation
