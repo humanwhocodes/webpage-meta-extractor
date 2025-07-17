@@ -5,4 +5,4 @@
 
 /* @ts-self-types="./index.d.ts" */
 
-export { WebpageMetaExtractor } from "./webpage-meta-extractor.js";
+export { WebpageMetaExtractor, WebpageMeta } from "./webpage-meta-extractor.js";
