@@ -1,4 +1,21 @@
 /**
+ * @fileoverview WebpageMetaExtractor extracts Open Graph, Twitter Card, and other meta tag information from a DOM Document.
+ * @author Nicholas C. Zakas
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+import { WebpageFeed } from "./webpage-feed.js";
+import { WebpageImage } from "./webpage-image.js";
+import { WebpageFavicon } from "./webpage-favicon.js";
+
+//-----------------------------------------------------------------------------
+// Exports
+//-----------------------------------------------------------------------------
+
+/**
  * WebpageMeta represents extracted Open Graph, Twitter Card, and other meta tag information.
  */
 export class WebpageMeta {
@@ -28,13 +45,13 @@ export class WebpageMeta {
 
 	/**
 	 * Feeds discovered in the page.
-	 * @type {Feed[]}
+	 * @type {WebpageFeed[]}
 	 */
 	feeds = [];
 
 	/**
 	 * All Open Graph images found on the page.
-	 * @type {MetaImage[]}
+	 * @type {WebpageImage[]}
 	 */
 	images = [];
 
@@ -46,7 +63,7 @@ export class WebpageMeta {
 
 	/**
 	 * All favicon candidates found on the page.
-	 * @type {Favicon[]}
+	 * @type {WebpageFavicon[]}
 	 */
 	favicons = [];
 
@@ -246,144 +263,6 @@ export class WebpageMeta {
 }
 
 /**
- * Represents a feed discovered in the page.
- */
-export class Feed {
-	/**
-	 * The title of the feed, if available.
-	 * @type {string|undefined}
-	 */
-	title;
-
-	/**
-	 * The type of the feed (e.g., 'application/rss+xml').
-	 * @type {string}
-	 */
-	type;
-
-	/**
-	 * The href (URL) of the feed.
-	 * @type {string}
-	 */
-	href;
-
-	/**
-	 * Creates a new Feed instance.
-	 * @param {string|undefined} title The feed title.
-	 * @param {string} type The feed type.
-	 * @param {string} href The feed URL.
-	 */
-	constructor(title, type, href) {
-		this.title = title;
-		this.type = type;
-		this.href = href;
-	}
-}
-
-/**
- * Represents an Open Graph image and its associated meta information.
- */
-export class MetaImage {
-	/**
-	 * The image URL (required).
-	 * @type {string}
-	 */
-	url;
-
-	/**
-	 * The image secure URL (optional).
-	 * @type {string|undefined}
-	 */
-	secureUrl;
-
-	/**
-	 * The image type (optional).
-	 * @type {string|undefined}
-	 */
-	type;
-
-	/**
-	 * The image width (optional).
-	 * @type {string|undefined}
-	 */
-	width;
-
-	/**
-	 * The image height (optional).
-	 * @type {string|undefined}
-	 */
-	height;
-
-	/**
-	 * The image alt text (optional).
-	 * @type {string|undefined}
-	 */
-	alt;
-
-	/**
-	 * Creates a new MetaImage instance.
-	 * @param {object} params The image parameters.
-	 * @param {string} params.url The image URL.
-	 * @param {string} [params.secureUrl] The secure image URL.
-	 * @param {string} [params.type] The image type.
-	 * @param {string} [params.width] The image width.
-	 * @param {string} [params.height] The image height.
-	 * @param {string} [params.alt] The image alt text.
-	 */
-	constructor({ url, secureUrl, type, width, height, alt }) {
-		this.url = url;
-		this.secureUrl = secureUrl;
-		this.type = type;
-		this.width = width;
-		this.height = height;
-		this.alt = alt;
-	}
-}
-
-/**
- * Favicon represents a favicon link element.
- */
-export class Favicon {
-	/**
-	 * The rel attribute of the favicon.
-	 * @type {string}
-	 */
-	rel;
-
-	/**
-	 * The type attribute of the favicon.
-	 * @type {string|undefined}
-	 */
-	type;
-
-	/**
-	 * The href attribute of the favicon.
-	 * @type {string}
-	 */
-	href;
-
-	/**
-	 * The sizes attribute of the favicon.
-	 * @type {string|undefined}
-	 */
-	sizes;
-
-	/**
-	 * Creates a new Favicon instance.
-	 * @param {string} rel The rel attribute.
-	 * @param {string} href The href attribute.
-	 * @param {string|undefined} type The type attribute.
-	 * @param {string|undefined} sizes The sizes attribute.
-	 */
-	constructor(rel, href, type, sizes) {
-		this.rel = rel;
-		this.href = href;
-		this.type = type;
-		this.sizes = sizes;
-	}
-}
-
-/**
  * WebpageMetaExtractor extracts Open Graph, Twitter Card, and other meta tag information from a DOM Document.
  */
 export class WebpageMetaExtractor {
@@ -419,7 +298,9 @@ export class WebpageMetaExtractor {
 			}
 
 			if (rel === "icon" || rel === "shortcut icon") {
-				result.favicons.push(new Favicon(rel, href, type, sizes));
+				result.favicons.push(
+					new WebpageFavicon(rel, href, type, sizes),
+				);
 			}
 			if (rel === "icon" && !result.other.has("icon")) {
 				result.other.set("icon", href);
@@ -447,7 +328,7 @@ export class WebpageMetaExtractor {
 
 				// Only create a new image for og:image or og:image:url
 				if (key === "image" || key === "image:url") {
-					result.images.push(new MetaImage({ url: content }));
+					result.images.push(new WebpageImage({ url: content }));
 				} else if (
 					key.startsWith("image:") &&
 					result.images.length > 0
@@ -544,7 +425,7 @@ export class WebpageMetaExtractor {
 			const type = tag.getAttribute("type") || "";
 			const href = tag.getAttribute("href") || "";
 
-			result.feeds.push(new Feed(title, type, href));
+			result.feeds.push(new WebpageFeed(title, type, href));
 		}
 
 		// Extract JSON-LD data

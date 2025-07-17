@@ -1,8 +1,53 @@
 ---
-applyTo: '**/*.js,**/*.ts'
+applyTo: "**/*.js,**/*.ts"
 ---
 
 # JavaScript/TypeScript Coding Style Guide
+
+## File Structure
+
+The overall file structure should follow this format:
+
+```javascript
+/**
+ * @fileoverview Brief description of the file.
+ * @author Your Name
+ */
+
+//-----------------------------------------------------------------------------
+// Imports
+//-----------------------------------------------------------------------------
+
+// Import statements should be grouped logically, e.g., third-party libraries, local modules, etc.
+// Omit this section if there are no imports.
+
+//-----------------------------------------------------------------------------
+// Types
+//-----------------------------------------------------------------------------
+
+// Type declarations should be grouped logically, e.g., interfaces, type aliases, etc.
+// Omit this section if there are no type declarations.
+
+//-----------------------------------------------------------------------------
+// Data
+//-----------------------------------------------------------------------------
+
+// Data declarations should be grouped logically, e.g., constants, configuration, etc.
+// Omit this section if there are no data declarations.
+
+//-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+// Helper functions should be grouped logically, e.g., internal-only utility functions
+// Omit this section if there are no helper functions.
+
+//-----------------------------------------------------------------------------
+// Exports
+//-----------------------------------------------------------------------------
+
+// Export statements should be grouped logically, e.g., classes, functions, constants, etc.
+```
 
 ## Indentation
 
@@ -14,7 +59,7 @@ Use double quotes for strings. Example:
 
 ```typescript
 // Incorrect
-const message = 'Hello, world!';
+const message = "Hello, world!";
 
 // Correct
 const message = "Hello, world!";
@@ -63,33 +108,31 @@ When a class has own properties, they should be declared as class fields at the 
 ```typescript
 // Incorrect
 class MyClass {
-
 	/**
-	* Creates a new instance.
-	* @param {number} value The value to set.
-	*/
+	 * Creates a new instance.
+	 * @param {number} value The value to set.
+	 */
 	constructor(value) {
-
-	/**
-		* The value of the class.
-		* @type {number}
-		*/
-	this.value = value;
+		/**
+		 * The value of the class.
+		 * @type {number}
+		 */
+		this.value = value;
 	}
 }
 
 // Correct
 class MyClass {
 	/**
-	* The value of the class.
-	* @type {number}
-	*/
+	 * The value of the class.
+	 * @type {number}
+	 */
 	value;
 
 	/**
-	* Creates a new instance.
-	* @param {number} value The value to set.
-	*/
+	 * Creates a new instance.
+	 * @param {number} value The value to set.
+	 */
 	constructor(value) {
 		this.value = value;
 	}
@@ -103,52 +146,49 @@ When a class has a constructor, it should be the first method in the class. Exam
 ```typescript
 // Incorrect
 class MyClass {
-	
 	/**
-	* The value of the class.
-	* @type {number}
-	*/
+	 * The value of the class.
+	 * @type {number}
+	 */
 	value;
-		
+
 	/**
-	* Gets the value of the class.
-	* @returns {number} The value of the class.
-	*/
+	 * Gets the value of the class.
+	 * @returns {number} The value of the class.
+	 */
 	getValue() {
 		return this.value;
 	}
 
 	/**
-	* Creates a new instance.
-	* @param {number} value The value to set.
-	*/
+	 * Creates a new instance.
+	 * @param {number} value The value to set.
+	 */
 	constructor(value) {
 		this.value = value;
 	}
-	
 }
 
 // correct
 class MyClass {
+	/**
+	 * The value of the class.
+	 * @type {number}
+	 */
+	value;
 
 	/**
-	* The value of the class.
-	* @type {number}
-	*/
-	value;
-		
-	/**
-	* Creates a new instance.
-	* @param {number} value The value to set.
-	*/
+	 * Creates a new instance.
+	 * @param {number} value The value to set.
+	 */
 	constructor(value) {
 		this.value = value;
 	}
-	
+
 	/**
-	* Gets the value of the class.
-	* @returns {number} The value of the class.
-	*/
+	 * Gets the value of the class.
+	 * @returns {number} The value of the class.
+	 */
 	getValue() {
 		return this.value;
 	}
@@ -166,12 +206,12 @@ If a value is used multiple times, assign it to a variable. Example:
 ```javascript
 // Incorrect
 if (url.startsWith("twitter:")) {
-  console.log("twitter:");
+	console.log("twitter:");
 }
 
 // Correct
 const prefix = "twitter:";
 if (url.startsWith(prefix)) {
-  console.log(prefix);
+	console.log(prefix);
 }
 ```
