@@ -6,7 +6,13 @@ If you find this useful, please consider supporting my work with a [donation](ht
 
 ## Description
 
-TODO
+A utility for extracting metadata from a webpage in a consistent way that makes it easy to work with.
+
+Requires a DOM `document` with `querySelector()` and `querySelectorAll()`, such as:
+
+- [JSDOM](https://github.com/jsdom/jsdom)
+- [Deno DOM](https://github.com/b-fuze/deno-dom)
+- Native browser `document`
 
 ## Installation
 
