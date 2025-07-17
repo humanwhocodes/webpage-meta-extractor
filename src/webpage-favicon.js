@@ -13,7 +13,7 @@
 export class WebpageFavicon {
 	/**
 	 * The rel attribute of the favicon.
-	 * @type {string}
+	 * @type {string|undefined}
 	 */
 	rel;
 
@@ -37,15 +37,20 @@ export class WebpageFavicon {
 
 	/**
 	 * Creates a new Favicon instance.
-	 * @param {string} rel The rel attribute.
-	 * @param {string} href The href attribute.
-	 * @param {string|undefined} type The type attribute.
-	 * @param {string|undefined} sizes The sizes attribute.
+	 * @param {string} href The href attribute (required).
+	 * @param {object} [options] Optional favicon properties.
+	 * @param {string} [options.rel] The rel attribute.
+	 * @param {string} [options.type] The type attribute.
+	 * @param {string} [options.sizes] The sizes attribute.
+	 * @throws {TypeError} If href is missing.
 	 */
-	constructor(rel, href, type, sizes) {
-		this.rel = rel;
+	constructor(href, options = {}) {
+		if (!href) {
+			throw new TypeError("WebpageFavicon: href is required");
+		}
 		this.href = href;
-		this.type = type;
-		this.sizes = sizes;
+		this.rel = options.rel;
+		this.type = options.type;
+		this.sizes = options.sizes;
 	}
 }

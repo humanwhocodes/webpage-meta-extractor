@@ -45,21 +45,25 @@ export class WebpageImage {
 	alt;
 
 	/**
-	 * Creates a new MetaImage instance.
-	 * @param {object} params The image parameters.
-	 * @param {string} params.url The image URL.
-	 * @param {string} [params.secureUrl] The secure image URL.
-	 * @param {string} [params.type] The image type.
-	 * @param {string} [params.width] The image width.
-	 * @param {string} [params.height] The image height.
-	 * @param {string} [params.alt] The image alt text.
+	 * Creates a new WebpageImage instance.
+	 * @param {string} url The image URL (required).
+	 * @param {object} [options] Optional image properties.
+	 * @param {string} [options.secureUrl] The secure image URL.
+	 * @param {string} [options.type] The image type.
+	 * @param {string} [options.width] The image width.
+	 * @param {string} [options.height] The image height.
+	 * @param {string} [options.alt] The image alt text.
+	 * @throws {TypeError} If url is missing.
 	 */
-	constructor({ url, secureUrl, type, width, height, alt }) {
+	constructor(url, options = {}) {
+		if (!url) {
+			throw new TypeError("WebpageImage: url is required");
+		}
 		this.url = url;
-		this.secureUrl = secureUrl;
-		this.type = type;
-		this.width = width;
-		this.height = height;
-		this.alt = alt;
+		this.secureUrl = options.secureUrl;
+		this.type = options.type;
+		this.width = options.width;
+		this.height = options.height;
+		this.alt = options.alt;
 	}
 }

@@ -53,7 +53,7 @@ export class WebpageMetaExtractor {
 
 			if (rel === "icon" || rel === "shortcut icon") {
 				result.favicons.push(
-					new WebpageFavicon(rel, href, type, sizes),
+					new WebpageFavicon(href, { rel, type, sizes }),
 				);
 			}
 			if (rel === "icon" && !result.other.has("icon")) {
@@ -82,7 +82,7 @@ export class WebpageMetaExtractor {
 
 				// Only create a new image for og:image or og:image:url
 				if (key === "image" || key === "image:url") {
-					result.images.push(new WebpageImage({ url: content }));
+					result.images.push(new WebpageImage(content));
 				} else if (
 					key.startsWith("image:") &&
 					result.images.length > 0
@@ -175,11 +175,14 @@ export class WebpageMetaExtractor {
 		// Extract feeds from <link rel="alternate" type="application/rss+xml"> or similar
 		const feedLinkTags = document.querySelectorAll('link[rel="alternate"]');
 		for (const tag of feedLinkTags) {
+			const href = tag.getAttribute("href");
+			if (!href) {
+				continue;
+			}
 			const title = tag.getAttribute("title") || undefined;
-			const type = tag.getAttribute("type") || "";
-			const href = tag.getAttribute("href") || "";
+			const type = tag.getAttribute("type") || undefined;
 
-			result.feeds.push(new WebpageFeed(title, type, href));
+			result.feeds.push(new WebpageFeed(href, { title, type }));
 		}
 
 		// Extract JSON-LD data

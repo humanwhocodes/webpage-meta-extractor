@@ -12,6 +12,12 @@
  */
 export class WebpageFeed {
 	/**
+	 * The href (URL) of the feed.
+	 * @type {string}
+	 */
+	href;
+
+	/**
 	 * The title of the feed, if available.
 	 * @type {string|undefined}
 	 */
@@ -19,25 +25,24 @@ export class WebpageFeed {
 
 	/**
 	 * The type of the feed (e.g., 'application/rss+xml').
-	 * @type {string}
+	 * @type {string|undefined}
 	 */
 	type;
 
 	/**
-	 * The href (URL) of the feed.
-	 * @type {string}
+	 * Creates a new WebpageFeed instance.
+	 * @param {string} href The feed URL (required).
+	 * @param {object} [options] Optional feed properties.
+	 * @param {string} [options.title] The feed title.
+	 * @param {string} [options.type] The feed type.
+	 * @throws {TypeError} If href is missing.
 	 */
-	href;
-
-	/**
-	 * Creates a new Feed instance.
-	 * @param {string|undefined} title The feed title.
-	 * @param {string} type The feed type.
-	 * @param {string} href The feed URL.
-	 */
-	constructor(title, type, href) {
-		this.title = title;
-		this.type = type;
+	constructor(href, options = {}) {
+		if (!href) {
+			throw new TypeError("WebpageFeed: href is required");
+		}
 		this.href = href;
+		this.title = options.title;
+		this.type = options.type;
 	}
 }
