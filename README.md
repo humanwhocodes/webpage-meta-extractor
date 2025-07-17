@@ -63,6 +63,7 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
 - `image` — Page image URL (string or undefined)
 - `url` — Canonical URL (string or undefined)
 - `siteName` — Site name (string or undefined)
+- `jsonld` — Array of all JSON-LD data found in `<script type="application/ld+json">` tags. Each element is a parsed JSON object.
 - `images` — Array of all Open Graph images found on the page. Each item is a `MetaImage` object with the following properties:
     - `url` (string, required): The image URL (from `og:image` or `og:image:url`)
     - `secureUrl` (string, optional): Secure image URL (`og:image:secure_url`)
@@ -122,6 +123,28 @@ console.log(meta.images);
 //     height: undefined,
 //     alt: "Second image"
 //   }
+// ]
+```
+
+##### Example: Extracting JSON-LD data
+
+```js
+const html = `
+<html><head>
+  <script type="application/ld+json">
+    {"@context": "https://schema.org", "@type": "Person", "name": "John Doe"}
+  </script>
+  <script type="application/ld+json">
+    {"@context": "https://schema.org", "@type": "Organization", "name": "Acme Corp"}
+  </script>
+</head></html>
+`;
+const dom = new JSDOM(html);
+const meta = extractor.extract(dom.window.document);
+console.log(meta.jsonld);
+// [
+//   { "@context": "https://schema.org", "@type": "Person", "name": "John Doe" },
+//   { "@context": "https://schema.org", "@type": "Organization", "name": "Acme Corp" }
 // ]
 ```
 

@@ -39,6 +39,12 @@ export class WebpageMeta {
 	images = [];
 
 	/**
+	 * All JSON-LD data found in the page.
+	 * @type {any[]}
+	 */
+	jsonld = [];
+
+	/**
 	 * Creates a new instance of WebpageMeta.
 	 */
 	constructor() {}
@@ -472,6 +478,20 @@ export class WebpageMetaExtractor {
 
 			if (href) {
 				result.feeds.push(new Feed(title, type, href));
+			}
+		}
+
+		// Extract <script type="application/ld+json">
+		const jsonLdTags = document.querySelectorAll(
+			"script[type='application/ld+json']",
+		);
+		for (const tag of jsonLdTags) {
+			try {
+				if (tag.textContent) {
+					result.jsonld.push(JSON.parse(tag.textContent));
+				}
+			} catch {
+				// Ignore JSON parse errors for malformed JSON-LD
 			}
 		}
 

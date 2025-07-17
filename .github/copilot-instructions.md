@@ -49,3 +49,12 @@ These are also used by TypeScript for type checking.
 - Run `npm test` to run all tests
 - Do not change the working directory when running tests
 - Never use the `assert()` function, always use specific assertion methods like `assert.strictEqual()`, `assert.throws()`, etc.
+
+## When Making Changes
+
+Whenever you make a change to the code, ensure that:
+
+- You update or add tests as necessary.
+- You run all tests to verify that your changes do not break existing functionality.
+- Files are formatted according to instructions.
+- You document user-facing changes in the README.md file.
