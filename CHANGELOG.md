@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.2.0...webpage-meta-extractor-v0.3.0) (2025-07-17)
+
+
+### Features
+
+* Export WebpageMeta class ([e8bc634](https://github.com/humanwhocodes/webpage-meta-extractor/commit/e8bc634cd545903f4caccf58a7e9191d3b79fa6b))
+* Externalize classes ([ce6bc07](https://github.com/humanwhocodes/webpage-meta-extractor/commit/ce6bc072cd86c5e11a5d89609225f5773e2516fa))
+* Redesign public interface ([43f35a5](https://github.com/humanwhocodes/webpage-meta-extractor/commit/43f35a554f8ac6e9a4fefef42121df09af1ae51f))
+
+
+### Bug Fixes
+
+* Ensure classes are exported ([d235b16](https://github.com/humanwhocodes/webpage-meta-extractor/commit/d235b16bcc0cd755a2e3e650a6e36f6def337b48))
+
 ## [0.2.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.1.0...webpage-meta-extractor-v0.2.0) (2025-07-17)
 
 
