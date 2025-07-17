@@ -45,6 +45,12 @@ export class WebpageMeta {
 	jsonld = [];
 
 	/**
+	 * All favicon candidates found on the page.
+	 * @type {Favicon[]}
+	 */
+	favicons = [];
+
+	/**
 	 * Creates a new instance of WebpageMeta.
 	 */
 	constructor() {}
@@ -54,6 +60,52 @@ export class WebpageMeta {
 	 * @returns {string} The favicon URL.
 	 */
 	get favicon() {
+		// Prefer SVG
+		const svg = this.favicons.find(
+			f =>
+				f.type === "image/svg+xml" ||
+				(f.href && f.href.endsWith(".svg")),
+		);
+		if (svg) {
+			return svg.href;
+		}
+
+		// Prefer PNG 32x32 or larger
+		const pngs = this.favicons.filter(
+			f => f.type === "image/png" || (f.href && f.href.endsWith(".png")),
+		);
+		const largePng = pngs.find(f => {
+			if (!f.sizes) {
+				return false;
+			}
+			// sizes can be "32x32" or "16x16 32x32"
+			return f.sizes.split(/\s+/).some(size => {
+				const [w, h] = size.split("x").map(Number);
+				return w >= 32 && h >= 32;
+			});
+		});
+		if (largePng) {
+			return largePng.href;
+		}
+		if (pngs.length) {
+			return pngs[0].href;
+		}
+
+		// Prefer ICO
+		const ico = this.favicons.find(
+			f =>
+				(f.type === "image/x-icon" ||
+					((f.rel === "icon" || f.rel === "shortcut icon") &&
+						f.href &&
+						f.href.toLowerCase().match(/\.ico(\?.*)?$/))) &&
+				f.href &&
+				f.href.toLowerCase().endsWith(".ico"),
+		);
+		if (ico) {
+			return ico.href;
+		}
+
+		// Fallback to previous logic
 		const icon = this.other.get("icon");
 		if (icon) {
 			return icon;
@@ -289,6 +341,49 @@ export class MetaImage {
 }
 
 /**
+ * Favicon represents a favicon link element.
+ */
+export class Favicon {
+	/**
+	 * The rel attribute of the favicon.
+	 * @type {string}
+	 */
+	rel;
+
+	/**
+	 * The type attribute of the favicon.
+	 * @type {string|undefined}
+	 */
+	type;
+
+	/**
+	 * The href attribute of the favicon.
+	 * @type {string}
+	 */
+	href;
+
+	/**
+	 * The sizes attribute of the favicon.
+	 * @type {string|undefined}
+	 */
+	sizes;
+
+	/**
+	 * Creates a new Favicon instance.
+	 * @param {string} rel The rel attribute.
+	 * @param {string} href The href attribute.
+	 * @param {string|undefined} type The type attribute.
+	 * @param {string|undefined} sizes The sizes attribute.
+	 */
+	constructor(rel, href, type, sizes) {
+		this.rel = rel;
+		this.href = href;
+		this.type = type;
+		this.sizes = sizes;
+	}
+}
+
+/**
  * WebpageMetaExtractor extracts Open Graph, Twitter Card, and other meta tag information from a DOM Document.
  */
 export class WebpageMetaExtractor {
@@ -311,81 +406,90 @@ export class WebpageMetaExtractor {
 		const metaTags = document.querySelectorAll("meta");
 		const result = new WebpageMeta();
 
-		// Extract <link rel="icon"> and <link rel="shortcut icon">
+		// Extract <link rel="icon"> and <link rel="shortcut icon"> (and all rels containing "icon")
 		const linkTags = document.querySelectorAll("link[rel]");
 		for (const tag of linkTags) {
-			const rel = tag.getAttribute("rel");
+			const rel = tag.getAttribute("rel").trim().toLowerCase();
 			const href = tag.getAttribute("href");
+			const type = tag.getAttribute("type") || undefined;
+			const sizes = tag.getAttribute("sizes") || undefined;
 
-			if (!href) {
+			if (!href || !rel) {
 				continue;
 			}
 
-			if (rel === "icon") {
-				if (!result.other.has("icon")) {
-					result.other.set("icon", href);
-				}
+			if (rel === "icon" || rel === "shortcut icon") {
+				result.favicons.push(new Favicon(rel, href, type, sizes));
 			}
-
-			if (rel === "shortcut icon") {
-				if (!result.other.has("shortcut icon")) {
-					result.other.set("shortcut icon", href);
-				}
+			if (rel === "icon" && !result.other.has("icon")) {
+				result.other.set("icon", href);
+			}
+			if (rel === "shortcut icon" && !result.other.has("shortcut icon")) {
+				result.other.set("shortcut icon", href);
 			}
 		}
 
-		// Temporary storage for grouping og:image meta fields by index
-		const ogImageMap = new Map();
-
-		// Extract Open Graph and Twitter Card meta tags
-		let currentImageObj = null;
 		for (const tag of metaTags) {
 			const property = tag.getAttribute("property");
 			const name = tag.getAttribute("name");
 			const content = tag.getAttribute("content");
 
-			if (property && content) {
-				if (property.startsWith(OG_PREFIX)) {
-					const key = property.slice(OG_PREFIX.length);
-					if (!result.openGraph.has(key)) {
-						result.openGraph.set(key, []);
-					}
-					const ogList = result.openGraph.get(key);
-					if (ogList) {
-						ogList.push(content);
-					}
-				} else if (property.startsWith(TWITTER_PREFIX)) {
-					const key = property.slice(TWITTER_PREFIX.length);
-					if (!result.twitterCard.has(key)) {
-						result.twitterCard.set(key, []);
-					}
-					const twList = result.twitterCard.get(key);
-					if (twList) {
-						twList.push(content);
+			// Open Graph (only process property)
+			if (property && content && property.startsWith(OG_PREFIX)) {
+				const key = property.slice(OG_PREFIX.length);
+				if (!result.openGraph.has(key)) {
+					result.openGraph.set(key, []);
+				}
+				const ogList = result.openGraph.get(key);
+				if (ogList) {
+					ogList.push(content);
+				}
+
+				// Only create a new image for og:image or og:image:url
+				if (key === "image" || key === "image:url") {
+					result.images.push(new MetaImage({ url: content }));
+				} else if (
+					key.startsWith("image:") &&
+					result.images.length > 0
+				) {
+					// Structured property for the most recent image
+					const lastImage = result.images[result.images.length - 1];
+					const subKey = key.slice("image:".length);
+					if (subKey === "secure_url") {
+						lastImage.secureUrl = content;
+					} else if (subKey === "type") {
+						lastImage.type = content;
+					} else if (subKey === "width") {
+						lastImage.width = content;
+					} else if (subKey === "height") {
+						lastImage.height = content;
+					} else if (subKey === "alt") {
+						lastImage.alt = content;
 					}
 				}
 			}
 
-			// Also handle Twitter Card and Open Graph via name attribute
-			if (name && content) {
-				if (name.startsWith(OG_PREFIX)) {
-					const key = name.slice(OG_PREFIX.length);
-					if (!result.openGraph.has(key)) {
-						result.openGraph.set(key, []);
-					}
-					const ogList = result.openGraph.get(key);
-					if (ogList) {
-						ogList.push(content);
-					}
-				} else if (name.startsWith(TWITTER_PREFIX)) {
-					const key = name.slice(TWITTER_PREFIX.length);
-					if (!result.twitterCard.has(key)) {
-						result.twitterCard.set(key, []);
-					}
-					const twList = result.twitterCard.get(key);
-					if (twList) {
-						twList.push(content);
-					}
+			// Twitter Card (property)
+			if (property && content && property.startsWith(TWITTER_PREFIX)) {
+				const key = property.slice(TWITTER_PREFIX.length);
+				if (!result.twitterCard.has(key)) {
+					result.twitterCard.set(key, []);
+				}
+				const twList = result.twitterCard.get(key);
+				if (twList) {
+					twList.push(content);
+				}
+			}
+
+			// Twitter Card (name)
+			if (name && content && name.startsWith(TWITTER_PREFIX)) {
+				const key = name.slice(TWITTER_PREFIX.length);
+				if (!result.twitterCard.has(key)) {
+					result.twitterCard.set(key, []);
+				}
+				const twList = result.twitterCard.get(key);
+				if (twList) {
+					twList.push(content);
 				}
 			}
 
@@ -420,78 +524,39 @@ export class WebpageMetaExtractor {
 					metaList.push(content);
 				}
 			}
-
-			// Collect Open Graph image meta fields for images array (Open Graph spec)
-			if (property && content && property.startsWith(OG_PREFIX)) {
-				const key = property.slice(OG_PREFIX.length);
-				if (key === "image" || key === "image:url") {
-					// Start a new image object
-					currentImageObj = { url: content };
-					result.images.push(new MetaImage(currentImageObj));
-				} else if (key.startsWith("image:")) {
-					// Structured property for the most recent image
-					if (result.images.length > 0) {
-						const lastImage =
-							result.images[result.images.length - 1];
-						const subKey = key.slice("image:".length);
-						if (subKey === "secure_url") {
-							lastImage.secureUrl = content;
-						} else if (subKey === "type") {
-							lastImage.type = content;
-						} else if (subKey === "width") {
-							lastImage.width = content;
-						} else if (subKey === "height") {
-							lastImage.height = content;
-						} else if (subKey === "alt") {
-							lastImage.alt = content;
-						}
-					}
-				}
-			}
 		}
 
-		// After all meta tags, create MetaImage instances for each og:image
-		for (const imageObj of ogImageMap.values()) {
-			if (imageObj.url) {
-				result.images.push(new MetaImage(imageObj));
-			}
-		}
-
-		// Extract <title> tag
+		// Extract <title> and first <h1> as potential title sources
 		const titleTag = document.querySelector("title");
 		if (titleTag && titleTag.textContent) {
 			result.other.set("title", titleTag.textContent);
 		}
 
-		// Extract first <h1> tag
 		const h1Tag = document.querySelector("h1");
 		if (h1Tag && h1Tag.textContent) {
 			result.other.set("firstHeading", h1Tag.textContent);
 		}
 
-		// Extract feeds from <link rel="alternate" type="application/rss+xml"> and similar
-		const feedLinkTags = document.querySelectorAll("link[rel='alternate']");
+		// Extract feeds from <link rel="alternate" type="application/rss+xml"> or similar
+		const feedLinkTags = document.querySelectorAll('link[rel="alternate"]');
 		for (const tag of feedLinkTags) {
 			const title = tag.getAttribute("title") || undefined;
 			const type = tag.getAttribute("type") || "";
-			const href = tag.getAttribute("href");
+			const href = tag.getAttribute("href") || "";
 
-			if (href) {
-				result.feeds.push(new Feed(title, type, href));
-			}
+			result.feeds.push(new Feed(title, type, href));
 		}
 
-		// Extract <script type="application/ld+json">
-		const jsonLdTags = document.querySelectorAll(
-			"script[type='application/ld+json']",
+		// Extract JSON-LD data
+		const scriptTags = document.querySelectorAll(
+			'script[type="application/ld+json"]',
 		);
-		for (const tag of jsonLdTags) {
+		for (const tag of scriptTags) {
 			try {
-				if (tag.textContent) {
-					result.jsonld.push(JSON.parse(tag.textContent));
-				}
+				const json = JSON.parse(tag.textContent);
+				result.jsonld.push(json);
 			} catch {
-				// Ignore JSON parse errors for malformed JSON-LD
+				// Ignore JSON-LD parsing errors
 			}
 		}
 

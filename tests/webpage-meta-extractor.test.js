@@ -378,3 +378,67 @@ describe("WebpageMeta jsonld property", () => {
 		assert.deepStrictEqual(meta.jsonld[0], { "@type": "Test" });
 	});
 });
+
+describe("WebpageMeta favicons and favicon getter", () => {
+	let extractor;
+
+	beforeEach(() => {
+		extractor = new WebpageMetaExtractor();
+	});
+
+	it("should extract all favicon candidates and prefer SVG", () => {
+		const html = `
+			<html><head>
+				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				<link rel="shortcut icon" href="/favicon.ico" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicons.length, 4);
+		assert.deepStrictEqual(
+			meta.favicons.map(f => f.href),
+			[
+				"/favicon-16.png",
+				"/favicon-32.png",
+				"/favicon.svg",
+				"/favicon.ico",
+			],
+		);
+		assert.strictEqual(meta.favicon, "/favicon.svg");
+	});
+
+	it("should prefer PNG 32x32+ if no SVG", () => {
+		const html = `
+			<html><head>
+				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+				<link rel="shortcut icon" href="/favicon.ico" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicon, "/favicon-32.png");
+	});
+
+	it("should prefer PNG over ICO if no SVG or large PNG", () => {
+		const html = `
+			<html><head>
+				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+				<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicon, "/favicon-16.png");
+	});
+
+	it("should fallback to /favicon.ico if no icons found", () => {
+		const html = `<html><head></head></html>`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicon, "/favicon.ico");
+	});
+});

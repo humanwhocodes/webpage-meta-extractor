@@ -38,7 +38,8 @@ const meta = extractor.extract(dom.window.document);
 
 console.log(meta.title); // "Example Title"
 console.log(meta.description); // "A description."
-console.log(meta.favicon); // "/favicon.ico"
+console.log(meta.favicon); // "/favicon.ico" (prefers SVG, then PNG 32x32+, then ICO, then fallback)
+console.log(meta.favicons); // Array of Favicon objects
 console.log(meta.openGraph); // Map { 'title' => [ 'Example Title' ] }
 console.log(meta.twitterCard); // Map { 'card' => [ 'summary' ] }
 console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
@@ -57,7 +58,12 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
 - `meta` — Map of other meta tags
 - `other` — Map of other extracted data (icon, shortcut icon, `<title>`, first `<h1>`)
 - `feeds` — Array of discovered feeds
-- `favicon` — Favicon URL (string)
+- `favicons` — Array of all favicon candidates found on the page. Each item is a `Favicon` object with:
+    - `rel` (string): The rel attribute
+    - `type` (string, optional): The type attribute
+    - `href` (string): The href attribute
+    - `sizes` (string, optional): The sizes attribute
+- `favicon` — Favicon URL (string, selected by preference: SVG > PNG 32x32+ > ICO > fallback)
 - `title` — Page title (string or undefined)
 - `description` — Page description (string or undefined)
 - `image` — Page image URL (string or undefined)
