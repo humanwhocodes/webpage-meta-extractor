@@ -235,18 +235,13 @@ export class WebpageMeta {
 	}
 
 	/**
-	 * The site name of the page, determined by Open Graph, Twitter Card, or meta tags.
+	 * The site name of the page, determined by Open Graph or meta tags.
 	 * @returns {string|undefined} The site name if found, otherwise undefined.
 	 */
 	get siteName() {
 		const og = this.openGraph.get("site_name");
 		if (og && og.length) {
 			return og[0];
-		}
-
-		const tw = this.twitterCard.get("site");
-		if (tw && tw.length) {
-			return tw[0];
 		}
 
 		const meta = this.meta.get("site_name");

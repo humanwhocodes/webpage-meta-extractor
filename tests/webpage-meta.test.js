@@ -99,7 +99,7 @@ describe("WebpageMeta property getters", () => {
 		assert.strictEqual(meta.url, "https://og.example");
 	});
 
-	it("should resolve siteName from og:site_name, twitter:site, then site_name", () => {
+	it("should resolve siteName from og:site_name, then site_name", () => {
 		const html = `
 			<html><head>
 				<meta property="og:site_name" content="OG Site" />
@@ -110,6 +110,18 @@ describe("WebpageMeta property getters", () => {
 		const dom = new JSDOM(html);
 		const meta = extractor.extract(dom.window.document);
 		assert.strictEqual(meta.siteName, "OG Site");
+	});
+
+	it("should resolve siteName from site_name if og:site_name is missing, ignoring twitter:site", () => {
+		const html = `
+			<html><head>
+				<meta name="twitter:site" content="@twsite" />
+				<meta name="site_name" content="Meta Site" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.siteName, "Meta Site");
 	});
 
 	it("should return undefined for missing properties", () => {
