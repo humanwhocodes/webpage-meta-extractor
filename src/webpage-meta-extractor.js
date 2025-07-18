@@ -13,6 +13,21 @@ import { WebpageImage } from "./webpage-image.js";
 import { WebpageFavicon } from "./webpage-favicon.js";
 
 //-----------------------------------------------------------------------------
+// Data
+//-----------------------------------------------------------------------------
+
+/**
+ * Allowed content-types for feeds (RSS, Atom, JSONFeed).
+ * @type {Set<string>}
+ */
+const ALLOWED_FEED_TYPES = new Set([
+	"application/rss+xml",
+	"application/atom+xml",
+	"application/feed+json",
+	"application/json",
+]);
+
+//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
@@ -182,7 +197,10 @@ export class WebpageMetaExtractor {
 			const title = tag.getAttribute("title") || undefined;
 			const type = tag.getAttribute("type") || undefined;
 
-			result.feeds.push(new WebpageFeed(href, { title, type }));
+			// Only allow RSS, Atom, or JSONFeed
+			if (type && ALLOWED_FEED_TYPES.has(type)) {
+				result.feeds.push(new WebpageFeed(href, { title, type }));
+			}
 		}
 
 		// Extract JSON-LD data

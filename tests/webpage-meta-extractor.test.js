@@ -104,4 +104,46 @@ describe("WebpageMetaExtractor", () => {
 			assert.deepStrictEqual(meta.get("description"), ["desc"]);
 		}
 	});
+	describe("feeds array content-type filtering", () => {
+		it("should include only RSS, Atom, and JSONFeed feeds", () => {
+			const html = `
+			<html><head>
+				<link rel="alternate" type="application/rss+xml" href="/rss.xml" title="RSS Feed" />
+				<link rel="alternate" type="application/atom+xml" href="/atom.xml" title="Atom Feed" />
+				<link rel="alternate" type="application/feed+json" href="/feed.json" title="JSONFeed" />
+				<link rel="alternate" type="application/json" href="/feed2.json" title="JSONFeed2" />
+				<link rel="alternate" type="text/xml" href="/not-feed.xml" title="Not a Feed" />
+				<link rel="alternate" type="text/html" href="/not-feed.html" title="Not a Feed" />
+			</head></html>
+			`;
+			const dom = new JSDOM(html);
+			const { feeds } = extractor.extract(dom.window.document);
+			assert.strictEqual(feeds.length, 4);
+			assert.deepStrictEqual(
+				feeds.map(f => f.type),
+				[
+					"application/rss+xml",
+					"application/atom+xml",
+					"application/feed+json",
+					"application/json",
+				],
+			);
+			assert.deepStrictEqual(
+				feeds.map(f => f.href),
+				["/rss.xml", "/atom.xml", "/feed.json", "/feed2.json"],
+			);
+		});
+
+		it("should ignore feeds with missing or unsupported type", () => {
+			const html = `
+			<html><head>
+				<link rel="alternate" href="/no-type.xml" title="No Type" />
+				<link rel="alternate" type="text/xml" href="/not-feed.xml" title="Not a Feed" />
+			</head></html>
+			`;
+			const dom = new JSDOM(html);
+			const { feeds } = extractor.extract(dom.window.document);
+			assert.strictEqual(feeds.length, 0);
+		});
+	});
 });
