@@ -21,6 +21,6 @@ jobs:
               run: |
                   bun install
                   bun run build
-                  bun run --bun test:unit
+                  bun run --bun test
               env:
                   CI: true
