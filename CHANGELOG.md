@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.3.0...webpage-meta-extractor-v0.4.0) (2025-07-18)
+
+
+### Features
+
+* Add canonical URL to WebpageMeta ([c7509b0](https://github.com/humanwhocodes/webpage-meta-extractor/commit/c7509b0a6ee9afedfc5573fd8c9c373900d448ad))
+* Add extname property to classes ([35ef3eb](https://github.com/humanwhocodes/webpage-meta-extractor/commit/35ef3ebbbd5a529dc2daee4ed82b1fa0173a38bb))
+
+
+### Bug Fixes
+
+* Ensure only known feed types are present in feeds ([73fdeaf](https://github.com/humanwhocodes/webpage-meta-extractor/commit/73fdeafc2af3f807a2d7797237a31d4d7e5e05c8))
+
 ## [0.3.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.2.0...webpage-meta-extractor-v0.3.0) (2025-07-17)
 
 
