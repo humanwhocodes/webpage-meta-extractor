@@ -59,6 +59,7 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
 
 #### `WebpageMeta` properties
 
+- `canonicalUrl` — The canonical URL for the page, if found (from `<link rel="canonical">`).
 - `openGraph` — Map of Open Graph meta tags (without `og:` prefix)
 - `twitterCard` — Map of Twitter Card meta tags (without `twitter:` prefix)
 - `meta` — Map of other meta tags

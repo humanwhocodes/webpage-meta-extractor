@@ -146,4 +146,24 @@ describe("WebpageMetaExtractor", () => {
 			assert.strictEqual(feeds.length, 0);
 		});
 	});
+	it('should extract canonicalUrl from <link rel="canonical">', () => {
+		const html = `
+			<html><head>
+				<link rel="canonical" href="https://example.com/canonical-url" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(
+			meta.canonicalUrl,
+			"https://example.com/canonical-url",
+		);
+	});
+
+	it('should set canonicalUrl to undefined if <link rel="canonical"> is missing', () => {
+		const html = `<html><head></head></html>`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.canonicalUrl, undefined);
+	});
 });

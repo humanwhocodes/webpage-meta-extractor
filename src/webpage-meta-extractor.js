@@ -177,6 +177,15 @@ export class WebpageMetaExtractor {
 		}
 
 		// Extract <title> and first <h1> as potential title sources
+		const canonicalTag = document.querySelector('link[rel="canonical"]');
+		if (canonicalTag) {
+			const canonicalHref = canonicalTag.getAttribute("href");
+
+			if (canonicalHref) {
+				result.canonicalUrl = canonicalHref;
+			}
+		}
+
 		const titleTag = document.querySelector("title");
 		if (titleTag && titleTag.textContent) {
 			result.other.set("title", titleTag.textContent);

@@ -67,9 +67,10 @@ export class WebpageMeta {
 	favicons = [];
 
 	/**
-	 * Creates a new instance of WebpageMeta.
+	 * The canonical URL for the page, if found.
+	 * @type {string|undefined}
 	 */
-	constructor() {}
+	canonicalUrl;
 
 	/**
 	 * The favicon URL of the page, determined by icon, shortcut icon, or defaults to /favicon.ico.

@@ -54,9 +54,9 @@ These are also used by TypeScript for type checking.
 
 Whenever you make a change to the code, you must:
 
-- Update or add tests as necessary. Don't wait for confirmation, just do it.
+- Update or add tests as necessary.
 - Run all tests to verify that your changes do not break existing functionality.
 - Structure and format files according to instructions.
 - Document user-facing changes in the README.md file.
 
-Do these automatically without getting confirmation.
+Do these automatically without asking for confirmation.
