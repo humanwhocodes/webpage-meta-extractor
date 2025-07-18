@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.4.0...webpage-meta-extractor-v0.4.1) (2025-07-18)
+
+
+### Bug Fixes
+
+* Don't consider twitter:site for siteName ([e290bea](https://github.com/humanwhocodes/webpage-meta-extractor/commit/e290bea80f0c515357e4f4e7375dd293b3911e37))
+
 ## [0.4.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.3.0...webpage-meta-extractor-v0.4.0) (2025-07-18)
 
 
