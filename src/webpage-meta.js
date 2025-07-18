@@ -78,9 +78,7 @@ export class WebpageMeta {
 	get favicon() {
 		// Prefer SVG
 		const svg = this.favicons.find(
-			f =>
-				f.type === "image/svg+xml" ||
-				(f.href && f.href.endsWith(".svg")),
+			f => f.type === "image/svg+xml" || f.extname === ".svg",
 		);
 		if (svg) {
 			return svg.href;
@@ -88,7 +86,7 @@ export class WebpageMeta {
 
 		// Prefer PNG 32x32 or larger
 		const pngs = this.favicons.filter(
-			f => f.type === "image/png" || (f.href && f.href.endsWith(".png")),
+			f => f.type === "image/png" || f.extname === ".png",
 		);
 		const largePng = pngs.find(f => {
 			if (!f.sizes) {
@@ -112,10 +110,8 @@ export class WebpageMeta {
 			f =>
 				(f.type === "image/x-icon" ||
 					((f.rel === "icon" || f.rel === "shortcut icon") &&
-						f.href &&
-						f.href.toLowerCase().match(/\.ico(\?.*)?$/))) &&
-				f.href &&
-				f.href.toLowerCase().endsWith(".ico"),
+						f.extname === ".ico")) &&
+				f.href,
 		);
 		if (ico) {
 			return ico.href;

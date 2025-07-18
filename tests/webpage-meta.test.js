@@ -10,6 +10,8 @@
 import assert from "assert";
 import { JSDOM } from "jsdom";
 import { WebpageMetaExtractor } from "../src/webpage-meta-extractor.js";
+import { WebpageMeta } from "../src/webpage-meta.js";
+import { WebpageFavicon } from "../src/webpage-favicon.js";
 
 //-----------------------------------------------------------------------------
 // Tests
@@ -361,6 +363,47 @@ describe("WebpageMeta favicons and favicon getter", () => {
 		const html = `<html><head></head></html>`;
 		const dom = new JSDOM(html);
 		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicon, "/favicon.ico");
+	});
+});
+
+describe("WebpageMeta direct property logic", () => {
+	it("should prefer SVG favicon even with query string", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon.svg?ver=2", { type: "image/svg+xml" }),
+			new WebpageFavicon("/favicon.png", {
+				type: "image/png",
+				sizes: "32x32",
+			}),
+		];
+		assert.strictEqual(meta.favicon, "/favicon.svg?ver=2");
+	});
+
+	it("should prefer PNG favicon with query string if no SVG", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon.png?v=1", {
+				type: "image/png",
+				sizes: "32x32",
+			}),
+			new WebpageFavicon("/favicon.ico", { type: "image/x-icon" }),
+		];
+		assert.strictEqual(meta.favicon, "/favicon.png?v=1");
+	});
+
+	it("should prefer ICO favicon with query string if no SVG or PNG", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon.ico?foo=bar", {
+				type: "image/x-icon",
+			}),
+		];
+		assert.strictEqual(meta.favicon, "/favicon.ico?foo=bar");
+	});
+
+	it("should fallback to /favicon.ico if no favicons present", () => {
+		const meta = new WebpageMeta();
 		assert.strictEqual(meta.favicon, "/favicon.ico");
 	});
 });

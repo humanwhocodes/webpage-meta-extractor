@@ -66,4 +66,23 @@ export class WebpageImage {
 		this.height = options.height;
 		this.alt = options.alt;
 	}
+
+	/**
+	 * The file extension of the image URL, including the leading dot (e.g., ".png").
+	 * Strips query strings and fragments before determining the extension.
+	 * Returns an empty string if no extension is found.
+	 * @returns {string} The file extension, or an empty string if not found.
+	 */
+	get extname() {
+		if (!this.url) {
+			return "";
+		}
+
+		const cleanUrl = this.url.split(/[?#]/)[0];
+		const lastDot = cleanUrl.lastIndexOf(".");
+		if (lastDot === -1 || lastDot < cleanUrl.lastIndexOf("/")) {
+			return "";
+		}
+		return cleanUrl.slice(lastDot).toLowerCase();
+	}
 }

@@ -75,3 +75,46 @@ describe("WebpageImage", () => {
 		}, TypeError);
 	});
 });
+
+describe("WebpageImage extname property", () => {
+	it("should return .png for a simple PNG URL", () => {
+		const img = new WebpageImage("https://example.com/image.png");
+		assert.strictEqual(img.extname, ".png");
+	});
+
+	it("should return .jpg for a JPG URL with query string", () => {
+		const img = new WebpageImage(
+			"https://example.com/photo.jpg?size=large",
+		);
+		assert.strictEqual(img.extname, ".jpg");
+	});
+
+	it("should return .jpeg for a JPEG URL with fragment", () => {
+		const img = new WebpageImage("https://example.com/photo.jpeg#section");
+		assert.strictEqual(img.extname, ".jpeg");
+	});
+
+	it("should return .svg for a SVG URL with query and fragment", () => {
+		const img = new WebpageImage(
+			"https://example.com/vector.svg?foo=bar#icon",
+		);
+		assert.strictEqual(img.extname, ".svg");
+	});
+
+	it("should return empty string for URL with no extension", () => {
+		const img = new WebpageImage("https://example.com/image");
+		assert.strictEqual(img.extname, "");
+	});
+
+	it("should return .png for URL with multiple dots", () => {
+		const img = new WebpageImage(
+			"https://example.com/archive.backup.image.png?foo=bar",
+		);
+		assert.strictEqual(img.extname, ".png");
+	});
+
+	it("should return empty string for URL ending with a slash", () => {
+		const img = new WebpageImage("https://example.com/images/");
+		assert.strictEqual(img.extname, "");
+	});
+});

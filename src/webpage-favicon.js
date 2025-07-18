@@ -53,4 +53,25 @@ export class WebpageFavicon {
 		this.type = options.type;
 		this.sizes = options.sizes;
 	}
+
+	/**
+	 * Gets the file extension of the favicon, stripping any query string before checking.
+	 *
+	 * @returns {string|undefined} The file extension (e.g., ".ico", ".png", ".svg"), or undefined if not found.
+	 */
+	get extname() {
+		if (!this.href) {
+			return undefined;
+		}
+
+		// Remove query string and fragment
+		const url = this.href.split(/[?#]/)[0];
+
+		const match = url.match(/\.([a-zA-Z0-9]+)$/);
+		if (match) {
+			return "." + match[1].toLowerCase();
+		}
+
+		return undefined;
+	}
 }

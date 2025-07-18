@@ -67,4 +67,31 @@ describe("WebpageFavicon", () => {
 			new WebpageFavicon();
 		}, TypeError);
 	});
+
+	it("should return the correct extname for .ico, .png, .svg", () => {
+		assert.strictEqual(new WebpageFavicon("/favicon.ico").extname, ".ico");
+		assert.strictEqual(new WebpageFavicon("/favicon.png").extname, ".png");
+		assert.strictEqual(new WebpageFavicon("/favicon.svg").extname, ".svg");
+	});
+
+	it("should strip query strings and fragments before checking extname", () => {
+		assert.strictEqual(
+			new WebpageFavicon("/favicon.ico?v=1").extname,
+			".ico",
+		);
+		assert.strictEqual(
+			new WebpageFavicon("/favicon.png?foo=bar#section").extname,
+			".png",
+		);
+		assert.strictEqual(
+			new WebpageFavicon("/favicon.svg#icon").extname,
+			".svg",
+		);
+	});
+
+	it("should return undefined if no extname is present", () => {
+		assert.strictEqual(new WebpageFavicon("/favicon").extname, undefined);
+		assert.strictEqual(new WebpageFavicon("/favicon?").extname, undefined);
+		assert.strictEqual(new WebpageFavicon("/favicon#").extname, undefined);
+	});
 });
