@@ -424,9 +424,9 @@ describe("openGraphObject property", () => {
 	it("should return all article properties for og:type=article", () => {
 		const meta = new WebpageMeta();
 		meta.openGraph.set("type", ["article"]);
-		meta.openGraph.set("article:published_time", ["2025-07-22T12:00:00Z"]);
-		meta.openGraph.set("article:author", ["https://example.com/author"]);
-		meta.openGraph.set("article:tag", ["tag1", "tag2"]);
+		meta.meta.set("article:published_time", ["2025-07-22T12:00:00Z"]);
+		meta.meta.set("article:author", ["https://example.com/author"]);
+		meta.meta.set("article:tag", ["tag1", "tag2"]);
 		const obj = meta.openGraphObject;
 		assert.deepStrictEqual(obj, {
 			published_time: "2025-07-22T12:00:00Z",
@@ -438,9 +438,9 @@ describe("openGraphObject property", () => {
 	it("should return all profile properties for og:type=profile", () => {
 		const meta = new WebpageMeta();
 		meta.openGraph.set("type", ["profile"]);
-		meta.openGraph.set("profile:first_name", ["Jane"]);
-		meta.openGraph.set("profile:last_name", ["Doe"]);
-		meta.openGraph.set("profile:username", ["janedoe"]);
+		meta.meta.set("profile:first_name", ["Jane"]);
+		meta.meta.set("profile:last_name", ["Doe"]);
+		meta.meta.set("profile:username", ["janedoe"]);
 		const obj = meta.openGraphObject;
 		assert.deepStrictEqual(obj, {
 			first_name: "Jane",
@@ -452,7 +452,7 @@ describe("openGraphObject property", () => {
 	it("should return all properties for unknown og:type", () => {
 		const meta = new WebpageMeta();
 		meta.openGraph.set("type", ["unknown"]);
-		meta.openGraph.set("unknown:foo", ["bar"]);
+		meta.meta.set("unknown:foo", ["bar"]);
 		assert.deepStrictEqual(meta.openGraphObject, { foo: "bar" });
 	});
 
@@ -464,10 +464,10 @@ describe("openGraphObject property", () => {
 	it("should use only the part before the dot in og:type for property extraction", () => {
 		const meta = new WebpageMeta();
 		meta.openGraph.set("type", ["video.other"]);
-		meta.openGraph.set("video:title", ["My Video"]);
-		meta.openGraph.set("video:duration", ["120"]);
-		meta.openGraph.set("video:tag", ["funny", "cats"]);
-		meta.openGraph.set("video.other:special", ["should not appear"]);
+		meta.meta.set("video:title", ["My Video"]);
+		meta.meta.set("video:duration", ["120"]);
+		meta.meta.set("video:tag", ["funny", "cats"]);
+		meta.meta.set("video.other:special", ["should not appear"]);
 		const obj = meta.openGraphObject;
 		assert.deepStrictEqual(obj, {
 			title: "My Video",
