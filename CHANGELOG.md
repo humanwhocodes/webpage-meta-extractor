@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.1...webpage-meta-extractor-v0.5.2) (2025-07-22)
+
+
+### Bug Fixes
+
+* openGraphObject calculation ([550ae4e](https://github.com/humanwhocodes/webpage-meta-extractor/commit/550ae4e91f360bf169921f06ca753d7608a4b3f2))
+
 ## [0.5.1](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.0...webpage-meta-extractor-v0.5.1) (2025-07-22)
 
 
