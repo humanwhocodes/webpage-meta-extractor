@@ -1,6 +1,6 @@
 {
   "name": "@humanwhocodes/webpage-meta-extractor",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Extracts Open Graph, Twitter Card, and other meta tags from HTML documents.",
   "type": "module",
   "main": "dist/index.js",
