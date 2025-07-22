@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.0...webpage-meta-extractor-v0.5.1) (2025-07-22)
+
+
+### Bug Fixes
+
+* openGraphObject extraction for og:types with dot ([778f22d](https://github.com/humanwhocodes/webpage-meta-extractor/commit/778f22db3e2498385ee933fa5b5ac179d574990e))
+
 ## [0.5.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.4.0...webpage-meta-extractor-v0.5.0) (2025-07-22)
 
 
