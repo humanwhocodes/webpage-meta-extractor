@@ -256,6 +256,7 @@ export class WebpageMeta {
 	 * The Open Graph object for the page, based on og:type and related properties.
 	 * Returns an object with keys for each property prefixed by og:type (e.g., og:article:*) for the current type.
 	 * Keys are in their original format (not camelCase) and values are from the openGraph map. If a property occurs more than once, the value is an array.
+	 * If og:type contains a dot (e.g., video.other), only the part before the dot is used as the prefix (e.g., video:).
 	 * @returns {{ [key: string]: string | string[] }} The Open Graph object for the current type, or an empty object if not applicable.
 	 */
 	get openGraphObject() {
@@ -266,7 +267,14 @@ export class WebpageMeta {
 			return result;
 		}
 
-		const type = typeArr[0];
+		let type = typeArr[0];
+
+		// Only use the part before the dot, if present
+		const dotIndex = type.indexOf(".");
+		if (dotIndex !== -1) {
+			type = type.slice(0, dotIndex);
+		}
+
 		const prefix = `${type}:`;
 
 		for (const [key, values] of this.openGraph.entries()) {

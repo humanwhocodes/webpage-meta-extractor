@@ -460,4 +460,19 @@ describe("openGraphObject property", () => {
 		const meta = new WebpageMeta();
 		assert.deepStrictEqual(meta.openGraphObject, {});
 	});
+
+	it("should use only the part before the dot in og:type for property extraction", () => {
+		const meta = new WebpageMeta();
+		meta.openGraph.set("type", ["video.other"]);
+		meta.openGraph.set("video:title", ["My Video"]);
+		meta.openGraph.set("video:duration", ["120"]);
+		meta.openGraph.set("video:tag", ["funny", "cats"]);
+		meta.openGraph.set("video.other:special", ["should not appear"]);
+		const obj = meta.openGraphObject;
+		assert.deepStrictEqual(obj, {
+			title: "My Video",
+			duration: "120",
+			tag: ["funny", "cats"],
+		});
+	});
 });
