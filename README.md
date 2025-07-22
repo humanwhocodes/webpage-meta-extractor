@@ -84,6 +84,7 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
     - `width` (string, optional): Image width in pixels (`og:image:width`)
     - `height` (string, optional): Image height in pixels (`og:image:height`)
     - `alt` (string, optional): Image alt text (`og:image:alt`)
+- `openGraphObject` — Returns an object representing the Open Graph object for the current page, based on the value of `og:type`. For any type, includes all properties in the format `og:type:property` (e.g., `article:published_time`, `profile:first_name`), with keys in their original format (not camelCase) and values from the Open Graph map. If a property occurs more than once, the value is an array. If the type is unknown or not present, returns an empty object.
 
 #### Error Handling
 
@@ -159,6 +160,22 @@ console.log(meta.jsonld);
 //   { "@context": "https://schema.org", "@type": "Person", "name": "John Doe" },
 //   { "@context": "https://schema.org", "@type": "Organization", "name": "Acme Corp" }
 // ]
+```
+
+##### Example: Extracting Open Graph object for an article
+
+```js
+const meta = new WebpageMeta();
+meta.openGraph.set("type", ["article"]);
+meta.openGraph.set("article:published_time", ["2025-07-22T12:00:00Z"]);
+meta.openGraph.set("article:author", ["https://example.com/author"]);
+meta.openGraph.set("article:tag", ["tag1", "tag2"]);
+console.log(meta.openGraphObject);
+// {
+//   publishedTime: "2025-07-22T12:00:00Z",
+//   author: "https://example.com/author",
+//   tag: ["tag1", "tag2"]
+// }
 ```
 
 ## License

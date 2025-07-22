@@ -419,3 +419,45 @@ describe("WebpageMeta direct property logic", () => {
 		assert.strictEqual(meta.favicon, "/favicon.ico");
 	});
 });
+
+describe("openGraphObject property", () => {
+	it("should return all article properties for og:type=article", () => {
+		const meta = new WebpageMeta();
+		meta.openGraph.set("type", ["article"]);
+		meta.openGraph.set("article:published_time", ["2025-07-22T12:00:00Z"]);
+		meta.openGraph.set("article:author", ["https://example.com/author"]);
+		meta.openGraph.set("article:tag", ["tag1", "tag2"]);
+		const obj = meta.openGraphObject;
+		assert.deepStrictEqual(obj, {
+			published_time: "2025-07-22T12:00:00Z",
+			author: "https://example.com/author",
+			tag: ["tag1", "tag2"],
+		});
+	});
+
+	it("should return all profile properties for og:type=profile", () => {
+		const meta = new WebpageMeta();
+		meta.openGraph.set("type", ["profile"]);
+		meta.openGraph.set("profile:first_name", ["Jane"]);
+		meta.openGraph.set("profile:last_name", ["Doe"]);
+		meta.openGraph.set("profile:username", ["janedoe"]);
+		const obj = meta.openGraphObject;
+		assert.deepStrictEqual(obj, {
+			first_name: "Jane",
+			last_name: "Doe",
+			username: "janedoe",
+		});
+	});
+
+	it("should return all properties for unknown og:type", () => {
+		const meta = new WebpageMeta();
+		meta.openGraph.set("type", ["unknown"]);
+		meta.openGraph.set("unknown:foo", ["bar"]);
+		assert.deepStrictEqual(meta.openGraphObject, { foo: "bar" });
+	});
+
+	it("should return empty object if og:type is missing", () => {
+		const meta = new WebpageMeta();
+		assert.deepStrictEqual(meta.openGraphObject, {});
+	});
+});

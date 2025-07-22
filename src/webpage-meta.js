@@ -251,4 +251,32 @@ export class WebpageMeta {
 
 		return undefined;
 	}
+
+	/**
+	 * The Open Graph object for the page, based on og:type and related properties.
+	 * Returns an object with keys for each property prefixed by og:type (e.g., og:article:*) for the current type.
+	 * Keys are in their original format (not camelCase) and values are from the openGraph map. If a property occurs more than once, the value is an array.
+	 * @returns {{ [key: string]: string | string[] }} The Open Graph object for the current type, or an empty object if not applicable.
+	 */
+	get openGraphObject() {
+		/** @type {{ [key: string]: string | string[] }} */
+		const result = {};
+		const typeArr = this.openGraph.get("type");
+		if (!typeArr || !typeArr.length) {
+			return result;
+		}
+
+		const type = typeArr[0];
+		const prefix = `${type}:`;
+
+		for (const [key, values] of this.openGraph.entries()) {
+			if (key.startsWith(prefix)) {
+				const prop = key.slice(prefix.length);
+				if (prop) {
+					result[prop] = values.length === 1 ? values[0] : values;
+				}
+			}
+		}
+		return result;
+	}
 }

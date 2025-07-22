@@ -54,6 +54,7 @@ These are also used by TypeScript for type checking.
 
 Whenever you make a change to the code, you must:
 
+- Fetch https://ogp.me/ whenenever working with Open Graph.
 - Update or add tests as necessary.
 - Run all tests to verify that your changes do not break existing functionality.
 - Structure and format files according to instructions.
