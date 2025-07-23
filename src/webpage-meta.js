@@ -74,6 +74,7 @@ export class WebpageMeta {
 
 	/**
 	 * The favicon URL of the page, determined by icon, shortcut icon, or defaults to /favicon.ico.
+	 * Favors SVG, then largest PNG, then any PNG, then everything else as-is.
 	 * @returns {string} The favicon URL.
 	 */
 	get favicon() {
@@ -85,23 +86,34 @@ export class WebpageMeta {
 			return svg.href;
 		}
 
-		// Prefer PNG 32x32 or larger
+		// Prefer PNG with largest size
 		const pngs = this.favicons.filter(
 			f => f.type === "image/png" || f.extname === ".png",
 		);
-		const largePng = pngs.find(f => {
-			if (!f.sizes) {
-				return false;
+		let largestPng = undefined;
+		let largestArea = 0;
+
+		for (const png of pngs) {
+			if (png.sizes) {
+				// sizes can be "32x32" or "16x16 32x32"
+				for (const size of png.sizes.split(/\s+/)) {
+					const [w, h] = size.split("x").map(Number);
+					if (!isNaN(w) && !isNaN(h)) {
+						const area = w * h;
+						if (area > largestArea) {
+							largestArea = area;
+							largestPng = png;
+						}
+					}
+				}
 			}
-			// sizes can be "32x32" or "16x16 32x32"
-			return f.sizes.split(/\s+/).some(size => {
-				const [w, h] = size.split("x").map(Number);
-				return w >= 32 && h >= 32;
-			});
-		});
-		if (largePng) {
-			return largePng.href;
 		}
+
+		if (largestPng) {
+			return largestPng.href;
+		}
+
+		// If no PNG with size, pick any PNG
 		if (pngs.length) {
 			return pngs[0].href;
 		}

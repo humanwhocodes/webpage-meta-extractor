@@ -377,6 +377,60 @@ describe("WebpageMeta favicons and favicon getter", () => {
 		const meta = extractor.extract(dom.window.document);
 		assert.strictEqual(meta.favicon, "/favicon.ico");
 	});
+
+	// Advanced favicon selection logic
+	it("should prefer the largest PNG if multiple PNGs with sizes are present", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon-16.png", {
+				type: "image/png",
+				sizes: "16x16",
+			}),
+			new WebpageFavicon("/favicon-64.png", {
+				type: "image/png",
+				sizes: "64x64",
+			}),
+			new WebpageFavicon("/favicon-32.png", {
+				type: "image/png",
+				sizes: "32x32",
+			}),
+		];
+		assert.strictEqual(meta.favicon, "/favicon-64.png");
+	});
+
+	it("should prefer the first PNG if no PNG has a size", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon-a.png", { type: "image/png" }),
+			new WebpageFavicon("/favicon-b.png", { type: "image/png" }),
+		];
+		assert.strictEqual(meta.favicon, "/favicon-a.png");
+	});
+
+	it("should prefer SVG over the largest PNG", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon-128.png", {
+				type: "image/png",
+				sizes: "128x128",
+			}),
+			new WebpageFavicon("/favicon.svg", { type: "image/svg+xml" }),
+		];
+		assert.strictEqual(meta.favicon, "/favicon.svg");
+	});
+
+	it("should fallback to ICO if no SVG or PNG present", () => {
+		const meta = new WebpageMeta();
+		meta.favicons = [
+			new WebpageFavicon("/favicon.ico", { type: "image/x-icon" }),
+		];
+		assert.strictEqual(meta.favicon, "/favicon.ico");
+	});
+
+	it("should fallback to /favicon.ico if no favicons present", () => {
+		const meta = new WebpageMeta();
+		assert.strictEqual(meta.favicon, "/favicon.ico");
+	});
 });
 
 describe("WebpageMeta direct property logic", () => {
