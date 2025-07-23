@@ -203,3 +203,162 @@ describe("WebpageMetaExtractor meta property population", () => {
 		assert.deepStrictEqual(meta.meta.get("custom"), ["Custom Name"]);
 	});
 });
+
+describe("WebpageMetaExtractor microdata extraction", () => {
+	let extractor;
+	beforeEach(() => {
+		extractor = new WebpageMetaExtractor();
+	});
+
+	it("should extract a simple microdata item", () => {
+		const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Person">
+					<span itemprop="name">Alice</span>
+					<span itemprop="jobTitle">Engineer</span>
+				</div>
+			</body></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Person"],
+				properties: {
+					name: ["Alice"],
+					jobTitle: ["Engineer"],
+				},
+			},
+		]);
+	});
+
+	it("should extract nested microdata items", () => {
+		const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Person">
+					<span itemprop="name">Bob</span>
+					<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+						<span itemprop="streetAddress">123 Main St</span>
+						<span itemprop="addressLocality">Metropolis</span>
+					</div>
+				</div>
+			</body></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Person"],
+				properties: {
+					name: ["Bob"],
+					address: [
+						{
+							type: ["http://schema.org/PostalAddress"],
+							properties: {
+								streetAddress: ["123 Main St"],
+								addressLocality: ["Metropolis"],
+							},
+						},
+					],
+				},
+			},
+		]);
+	});
+
+	it("should extract multiple top-level microdata items", () => {
+		const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Person">
+					<span itemprop="name">Carol</span>
+				</div>
+				<div itemscope itemtype="http://schema.org/Person">
+					<span itemprop="name">Dave</span>
+				</div>
+			</body></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Person"],
+				properties: {
+					name: ["Carol"],
+				},
+			},
+			{
+				type: ["http://schema.org/Person"],
+				properties: {
+					name: ["Dave"],
+				},
+			},
+		]);
+	});
+
+	it("should extract itemid and various value types", () => {
+		const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Thing" itemid="#thing1">
+					<meta itemprop="metaProp" content="metaValue">
+					<a itemprop="url" href="https://example.com">Link</a>
+					<time itemprop="date" datetime="2020-01-01">Jan 1, 2020</time>
+					<span itemprop="text">Some text</span>
+				</div>
+			</body></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Thing"],
+				id: "#thing1",
+				properties: {
+					metaProp: ["metaValue"],
+					url: ["https://example.com"],
+					date: ["2020-01-01"],
+					text: ["Some text"],
+				},
+			},
+		]);
+	});
+
+	it("should handle cycles gracefully (itemref self-reference)", () => {
+		const html = `
+				<html><body>
+					<div itemscope itemtype="http://schema.org/Thing" id="item1" itemref="item1">
+						<span itemprop="name">Cycle</span>
+					</div>
+				</body></html>
+			`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Thing"],
+				properties: {
+					name: ["Cycle"],
+				},
+			},
+		]);
+	});
+
+	it("should support multiple itemprop names on one element", () => {
+		const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Thing">
+					<span itemprop="foo bar">baz</span>
+				</div>
+			</body></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.microdata, [
+			{
+				type: ["http://schema.org/Thing"],
+				properties: {
+					foo: ["baz"],
+					bar: ["baz"],
+				},
+			},
+		]);
+	});
+});

@@ -51,6 +51,32 @@ console.log(meta.twitterCard); // Map { 'card' => [ 'summary' ] }
 console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
 ```
 
+### Microdata Example
+
+```js
+const html = `
+<html><body>
+  <div itemscope itemtype="http://schema.org/Person">
+    <span itemprop="name">Alice</span>
+    <span itemprop="jobTitle">Engineer</span>
+  </div>
+</body></html>
+`;
+const dom = new JSDOM(html);
+const extractor = new WebpageMetaExtractor();
+const meta = extractor.extract(dom.window.document);
+console.log(meta.microdata);
+// [
+//   {
+//     type: ["http://schema.org/Person"],
+//     properties: {
+//       name: ["Alice"],
+//       jobTitle: ["Engineer"]
+//     }
+//   }
+// ]
+```
+
 ### API
 
 #### `WebpageMetaExtractor`
@@ -85,6 +111,7 @@ console.log(meta.meta); // Map { 'description' => [ 'A description.' ] }
     - `height` (string, optional): Image height in pixels (`og:image:height`)
     - `alt` (string, optional): Image alt text (`og:image:alt`)
 - `openGraphObject` — Returns an object representing the Open Graph object for the current page, based on the value of `og:type`. For any type, includes all properties in the format `og:type:property` (e.g., `article:published_time`, `profile:first_name`), with keys in their original format (not camelCase) and values from the Open Graph map. If a property occurs more than once, the value is an array. If the type is unknown or not present, returns an empty object.
+- `microdata` — Array of all top-level microdata items found in the page, following the [WHATWG microdata JSON extraction algorithm](https://html.spec.whatwg.org/multipage/microdata.html#json). Each entry is an object with optional `type` (array), optional `id` (string), and `properties` (object mapping property names to arrays of values, which may be strings or nested microdata objects).
 
 #### Error Handling
 

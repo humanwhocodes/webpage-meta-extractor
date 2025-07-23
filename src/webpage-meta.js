@@ -1,5 +1,5 @@
 /**
- * @fileoverview WebpageMeta represents extracted meta tag information, including Open Graph and Twitter Card, in a single meta property.
+ * @fileoverview WebpageMeta represents extracted Open Graph, Twitter Card, and other meta tag information.
  * @author Nicholas C. Zakas
  */
 
@@ -288,4 +288,11 @@ export class WebpageMeta {
 		}
 		return result;
 	}
+
+	/**
+	 * All microdata items found in the page, as per the WHATWG microdata JSON extraction algorithm.
+	 * Each entry is an object representing a top-level microdata item and its properties.
+	 * @type {object[]}
+	 */
+	microdata = [];
 }

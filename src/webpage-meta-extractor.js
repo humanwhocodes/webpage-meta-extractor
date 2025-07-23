@@ -28,6 +28,140 @@ const ALLOWED_FEED_TYPES = new Set([
 ]);
 
 //-----------------------------------------------------------------------------
+// Helpers
+//-----------------------------------------------------------------------------
+
+/**
+ * Recursively extracts a microdata item as a JSON object.
+ * @param {any} itemElem
+ * @param {Set<any>} memory
+ * @returns {object|undefined}
+ */
+function extractMicrodataItem(itemElem, memory = new Set()) {
+	if (memory.has(itemElem)) {
+		return undefined;
+	}
+	const result = {};
+	const nextMemory = new Set(memory);
+	nextMemory.add(itemElem);
+
+	// type
+	const itemtype = itemElem.getAttribute("itemtype");
+	if (itemtype) {
+		const types = itemtype.trim().split(/\s+/).filter(Boolean);
+		if (types.length) {
+			result.type = types;
+		}
+	}
+
+	// id
+	const itemid = itemElem.getAttribute("itemid");
+	if (itemid) {
+		result.id = itemid.trim();
+	}
+
+	// properties
+	/** @type {{ [key: string]: any[] }} */
+	const properties = {};
+	const propElems = [];
+	const pending = [];
+
+	// Add children
+	for (const child of itemElem.children) {
+		pending.push(child);
+	}
+	// Add itemref
+	const itemref = itemElem.getAttribute("itemref");
+	if (itemref) {
+		for (const refId of itemref.trim().split(/\s+/)) {
+			const refElem = itemElem.ownerDocument.getElementById(refId);
+			if (refElem) {
+				pending.push(refElem);
+			}
+		}
+	}
+	// Traverse
+	const visited = new Set();
+	while (pending.length) {
+		const current = pending.shift();
+		if (!current || visited.has(current)) {
+			continue;
+		}
+		visited.add(current);
+		if (!current.hasAttribute("itemscope")) {
+			for (const child of current.children) {
+				pending.push(child);
+			}
+		}
+		if (current.hasAttribute("itemprop")) {
+			propElems.push(current);
+		}
+	}
+	// Sort propElems in tree order (a precedes b if a comes before b in the document)
+	propElems.sort((a, b) => {
+		if (a === b) {
+			return 0;
+		}
+		const pos = a.compareDocumentPosition(b);
+		if (pos & 2) {
+			return 1;
+		} else if (pos & 4) {
+			return -1;
+		}
+		return 0;
+	});
+	// Extract property values
+	for (const elem of propElems) {
+		const names = elem
+			.getAttribute("itemprop")
+			.trim()
+			.split(/\s+/)
+			.filter(Boolean);
+		let value;
+		if (elem.hasAttribute("itemscope")) {
+			value = extractMicrodataItem(elem, memory);
+			if (typeof value === "undefined") {
+				continue; // skip cyclic reference
+			}
+		} else if (elem.tagName === "META") {
+			value = elem.getAttribute("content") || "";
+		} else if (["A", "AREA", "LINK"].includes(elem.tagName)) {
+			value = elem.getAttribute("href") || "";
+		} else if (
+			[
+				"AUDIO",
+				"EMBED",
+				"IFRAME",
+				"IMG",
+				"SOURCE",
+				"TRACK",
+				"VIDEO",
+			].includes(elem.tagName)
+		) {
+			value = elem.getAttribute("src") || "";
+		} else if (elem.tagName === "OBJECT") {
+			value = elem.getAttribute("data") || "";
+		} else if (elem.tagName === "DATA") {
+			value = elem.getAttribute("value") || "";
+		} else if (elem.tagName === "METER") {
+			value = elem.getAttribute("value") || "";
+		} else if (elem.tagName === "TIME") {
+			value = elem.getAttribute("datetime") || elem.textContent || "";
+		} else {
+			value = elem.textContent || "";
+		}
+		for (const name of names) {
+			if (!properties[name]) {
+				properties[name] = [];
+			}
+			properties[name].push(value);
+		}
+	}
+	result.properties = properties;
+	return result;
+}
+
+//-----------------------------------------------------------------------------
 // Exports
 //-----------------------------------------------------------------------------
 
@@ -182,6 +316,17 @@ export class WebpageMetaExtractor {
 				result.jsonld.push(json);
 			} catch {
 				// Ignore JSON-LD parsing errors
+			}
+		}
+
+		// Find all top-level microdata items
+		const topLevelItems = document.querySelectorAll(
+			"[itemscope]:not([itemprop])",
+		);
+		for (const itemElem of topLevelItems) {
+			const item = extractMicrodataItem(itemElem);
+			if (item) {
+				result.microdata.push(item);
 			}
 		}
 
