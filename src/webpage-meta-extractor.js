@@ -50,9 +50,24 @@ export class WebpageMetaExtractor {
 		}
 
 		const OG_PREFIX = "og:";
-		const TWITTER_PREFIX = "twitter:";
 		const metaTags = document.querySelectorAll("meta");
 		const result = new WebpageMeta();
+
+		/**
+		 * Adds a value to a map of arrays.
+		 * @param {Map<string, string[]>} map
+		 * @param {string} key
+		 * @param {string} value
+		 */
+		function addToMap(map, key, value) {
+			if (!map.has(key)) {
+				map.set(key, []);
+			}
+			const arr = map.get(key);
+			if (arr) {
+				arr.push(value);
+			}
+		}
 
 		// Extract <link rel="icon"> and <link rel="shortcut icon"> (and all rels containing "icon")
 		const linkTags = document.querySelectorAll("link[rel]");
@@ -84,27 +99,20 @@ export class WebpageMetaExtractor {
 			const name = tag.getAttribute("name");
 			const content = tag.getAttribute("content");
 
-			// Open Graph (only process property)
-			if (property && content && property.startsWith(OG_PREFIX)) {
-				const key = property.slice(OG_PREFIX.length);
-				if (!result.openGraph.has(key)) {
-					result.openGraph.set(key, []);
-				}
-				const ogList = result.openGraph.get(key);
-				if (ogList) {
-					ogList.push(content);
-				}
+			if (!content) {
+				continue;
+			}
 
-				// Only create a new image for og:image or og:image:url
-				if (key === "image" || key === "image:url") {
+			// Special Open Graph image handling (property only)
+			if (property && property.startsWith(OG_PREFIX)) {
+				if (property === "og:image" || property === "og:image:url") {
 					result.images.push(new WebpageImage(content));
 				} else if (
-					key.startsWith("image:") &&
+					property.startsWith("og:image:") &&
 					result.images.length > 0
 				) {
-					// Structured property for the most recent image
 					const lastImage = result.images[result.images.length - 1];
-					const subKey = key.slice("image:".length);
+					const subKey = property.slice("og:image:".length);
 					if (subKey === "secure_url") {
 						lastImage.secureUrl = content;
 					} else if (subKey === "type") {
@@ -119,60 +127,12 @@ export class WebpageMetaExtractor {
 				}
 			}
 
-			// Twitter Card (property)
-			if (property && content && property.startsWith(TWITTER_PREFIX)) {
-				const key = property.slice(TWITTER_PREFIX.length);
-				if (!result.twitterCard.has(key)) {
-					result.twitterCard.set(key, []);
-				}
-				const twList = result.twitterCard.get(key);
-				if (twList) {
-					twList.push(content);
-				}
+			// Add property and name to meta map
+			if (property) {
+				addToMap(result.meta, property, content);
 			}
-
-			// Twitter Card (name)
-			if (name && content && name.startsWith(TWITTER_PREFIX)) {
-				const key = name.slice(TWITTER_PREFIX.length);
-				if (!result.twitterCard.has(key)) {
-					result.twitterCard.set(key, []);
-				}
-				const twList = result.twitterCard.get(key);
-				if (twList) {
-					twList.push(content);
-				}
-			}
-
-			// Only store meta tags that are not Open Graph or Twitter Card in meta
-			if (
-				name &&
-				content &&
-				!name.startsWith(OG_PREFIX) &&
-				!name.startsWith(TWITTER_PREFIX)
-			) {
-				if (!result.meta.has(name)) {
-					result.meta.set(name, []);
-				}
-				const metaList = result.meta.get(name);
-				if (metaList) {
-					metaList.push(content);
-				}
-			}
-
-			// Also store non-OG/non-Twitter property attributes in meta
-			if (
-				property &&
-				content &&
-				!property.startsWith(OG_PREFIX) &&
-				!property.startsWith(TWITTER_PREFIX)
-			) {
-				if (!result.meta.has(property)) {
-					result.meta.set(property, []);
-				}
-				const metaList = result.meta.get(property);
-				if (metaList) {
-					metaList.push(content);
-				}
+			if (name) {
+				addToMap(result.meta, name, content);
 			}
 		}
 

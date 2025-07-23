@@ -1,5 +1,5 @@
 /**
- * @fileoverview WebpageMeta represents extracted Open Graph, Twitter Card, and other meta tag information.
+ * @fileoverview WebpageMeta represents extracted meta tag information, including Open Graph and Twitter Card, in a single meta property.
  * @author Nicholas C. Zakas
  */
 
@@ -19,19 +19,8 @@
 
 export class WebpageMeta {
 	/**
-	 * Open Graph meta tags. Keys are stripped of the 'og:' prefix.
-	 * @type {Map<string, string[]>}
-	 */
-	openGraph = new Map();
-
-	/**
-	 * Twitter Card meta tags. Keys are stripped of the 'twitter:' prefix.
-	 * @type {Map<string, string[]>}
-	 */
-	twitterCard = new Map();
-
-	/**
-	 * Other meta tags.
+	 * Other meta tags, including Open Graph (og:*) and Twitter Card (twitter:*) tags.
+	 * All meta tag data is stored here, with the key as the meta name/property and the value as an array of strings.
 	 * @type {Map<string, string[]>}
 	 */
 	meta = new Map();
@@ -149,12 +138,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The title if found, otherwise undefined.
 	 */
 	get title() {
-		const og = this.openGraph.get("title");
+		const og = this.meta.get("og:title");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("title");
+		const tw = this.meta.get("twitter:title");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -182,12 +171,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The description if found, otherwise undefined.
 	 */
 	get description() {
-		const og = this.openGraph.get("description");
+		const og = this.meta.get("og:description");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("description");
+		const tw = this.meta.get("twitter:description");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -205,12 +194,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The image URL if found, otherwise undefined.
 	 */
 	get image() {
-		const og = this.openGraph.get("image");
+		const og = this.meta.get("og:image");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("image");
+		const tw = this.meta.get("twitter:image");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -228,12 +217,12 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The URL if found, otherwise undefined.
 	 */
 	get url() {
-		const og = this.openGraph.get("url");
+		const og = this.meta.get("og:url");
 		if (og && og.length) {
 			return og[0];
 		}
 
-		const tw = this.twitterCard.get("url");
+		const tw = this.meta.get("twitter:url");
 		if (tw && tw.length) {
 			return tw[0];
 		}
@@ -251,7 +240,7 @@ export class WebpageMeta {
 	 * @returns {string|undefined} The site name if found, otherwise undefined.
 	 */
 	get siteName() {
-		const og = this.openGraph.get("site_name");
+		const og = this.meta.get("og:site_name");
 		if (og && og.length) {
 			return og[0];
 		}
@@ -266,7 +255,7 @@ export class WebpageMeta {
 
 	/**
 	 * The Open Graph object for the page, based on og:type and related properties.
-	 * Returns an object with keys for each property prefixed by og:type (e.g., og:article:*) for the current type.
+	 * Returns an object with keys for each property prefixed by type (e.g., article:*) for the current type.
 	 * Keys are in their original format (not camelCase) and values are from the meta map. If a property occurs more than once, the value is an array.
 	 * If og:type contains a dot (e.g., video.other), only the part before the dot is used as the prefix (e.g., video:).
 	 * @returns {{ [key: string]: string | string[] }} The Open Graph object for the current type, or an empty object if not applicable.
@@ -274,7 +263,7 @@ export class WebpageMeta {
 	get openGraphObject() {
 		/** @type {{ [key: string]: string | string[] }} */
 		const result = {};
-		const typeArr = this.openGraph.get("type");
+		const typeArr = this.meta.get("og:type");
 		if (!typeArr || !typeArr.length) {
 			return result;
 		}

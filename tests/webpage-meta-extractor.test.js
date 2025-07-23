@@ -34,18 +34,16 @@ describe("WebpageMetaExtractor", () => {
             </head></html>
         `;
 		const dom = new JSDOM(html);
-		const { openGraph, twitterCard, meta } = extractor.extract(
-			dom.window.document,
-		);
-		assert.deepStrictEqual(openGraph.get("title"), ["OG Title"]);
-		assert.deepStrictEqual(openGraph.get("image"), [
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.meta.get("og:title"), ["OG Title"]);
+		assert.deepStrictEqual(meta.meta.get("og:image"), [
 			"img1.jpg",
 			"img2.jpg",
 		]);
-		assert.deepStrictEqual(twitterCard.get("card"), ["summary"]);
-		assert.deepStrictEqual(twitterCard.get("site"), ["@site"]);
-		assert.deepStrictEqual(meta.get("description"), ["desc"]);
-		assert.deepStrictEqual(meta.get("custom:tag"), ["custom"]);
+		assert.deepStrictEqual(meta.meta.get("twitter:card"), ["summary"]);
+		assert.deepStrictEqual(meta.meta.get("twitter:site"), ["@site"]);
+		assert.deepStrictEqual(meta.meta.get("description"), ["desc"]);
+		assert.deepStrictEqual(meta.meta.get("custom:tag"), ["custom"]);
 	});
 
 	it("should handle missing content attributes gracefully", () => {
@@ -55,12 +53,8 @@ describe("WebpageMetaExtractor", () => {
             <meta name="description" />
         </head></html>`;
 		const dom = new JSDOM(html);
-		const { openGraph, twitterCard, meta } = extractor.extract(
-			dom.window.document,
-		);
-		assert.strictEqual(openGraph.size, 0);
-		assert.strictEqual(twitterCard.size, 0);
-		assert.strictEqual(meta.size, 0);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.meta.size, 0);
 	});
 
 	it("should throw TypeError for invalid input", () => {
@@ -74,17 +68,17 @@ describe("WebpageMetaExtractor", () => {
 		});
 	});
 
-	it("should not include Open Graph or Twitter Card tags in meta", () => {
+	it("should not include Open Graph or Twitter Card tags in meta (legacy test, now always included)", () => {
 		const html = `<html><head>
             <meta property="og:title" content="OG Title" />
             <meta name="twitter:card" content="summary" />
             <meta name="description" content="desc" />
         </head></html>`;
 		const dom = new JSDOM(html);
-		const { meta } = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.has("description"), true);
-		assert.strictEqual(meta.has("title"), false);
-		assert.strictEqual(meta.has("card"), false);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.meta.has("description"), true);
+		assert.strictEqual(meta.meta.has("og:title"), true);
+		assert.strictEqual(meta.meta.has("twitter:card"), true);
 	});
 
 	it("should support concurrent extraction", async () => {
@@ -98,10 +92,10 @@ describe("WebpageMetaExtractor", () => {
 			extractor.extract(dom.window.document),
 			extractor.extract(dom.window.document),
 		]);
-		for (const { openGraph, twitterCard, meta } of results) {
-			assert.deepStrictEqual(openGraph.get("title"), ["OG Title"]);
-			assert.deepStrictEqual(twitterCard.get("card"), ["summary"]);
-			assert.deepStrictEqual(meta.get("description"), ["desc"]);
+		for (const meta of results) {
+			assert.deepStrictEqual(meta.meta.get("og:title"), ["OG Title"]);
+			assert.deepStrictEqual(meta.meta.get("twitter:card"), ["summary"]);
+			assert.deepStrictEqual(meta.meta.get("description"), ["desc"]);
 		}
 	});
 	describe("feeds array content-type filtering", () => {
@@ -165,5 +159,47 @@ describe("WebpageMetaExtractor", () => {
 		const dom = new JSDOM(html);
 		const meta = extractor.extract(dom.window.document);
 		assert.strictEqual(meta.canonicalUrl, undefined);
+	});
+});
+
+describe("WebpageMetaExtractor meta property population", () => {
+	let extractor;
+
+	beforeEach(() => {
+		extractor = new WebpageMetaExtractor();
+	});
+
+	it("should include all meta tags (og:, twitter:, and others) from both property and name attributes in meta property", () => {
+		const html = `
+			<html><head>
+				<meta property="og:title" content="OG Title Property" />
+				<meta name="og:title" content="OG Title Name" />
+				<meta property="twitter:title" content="Twitter Title Property" />
+				<meta name="twitter:title" content="Twitter Title Name" />
+				<meta property="description" content="Description Property" />
+				<meta name="description" content="Description Name" />
+				<meta name="custom" content="Custom Name" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+
+		// og:title
+		assert.deepStrictEqual(meta.meta.get("og:title"), [
+			"OG Title Property",
+			"OG Title Name",
+		]);
+		// twitter:title
+		assert.deepStrictEqual(meta.meta.get("twitter:title"), [
+			"Twitter Title Property",
+			"Twitter Title Name",
+		]);
+		// description
+		assert.deepStrictEqual(meta.meta.get("description"), [
+			"Description Property",
+			"Description Name",
+		]);
+		// custom
+		assert.deepStrictEqual(meta.meta.get("custom"), ["Custom Name"]);
 	});
 });
