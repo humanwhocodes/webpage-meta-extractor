@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.2...webpage-meta-extractor-v0.6.0) (2025-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove openGraph, twitterCard; consolidate to meta
+
+### Features
+
+* Microdata extraction ([fdeff72](https://github.com/humanwhocodes/webpage-meta-extractor/commit/fdeff722a7c88b5b9e5cab68c45067238c67de65))
+* Remove openGraph, twitterCard; consolidate to meta ([fd9eab3](https://github.com/humanwhocodes/webpage-meta-extractor/commit/fd9eab331f01f548788c4487e1beb3b158bc3297))
+
+
+### Bug Fixes
+
+* Prefer largest PNG favicon available ([662a289](https://github.com/humanwhocodes/webpage-meta-extractor/commit/662a289dec87183d47884aba677303e33b468d8a))
+
 ## [0.5.2](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.1...webpage-meta-extractor-v0.5.2) (2025-07-22)
 
 
