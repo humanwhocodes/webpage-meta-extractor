@@ -33,6 +33,28 @@ const ALLOWED_FEED_TYPES = new Set([
 //-----------------------------------------------------------------------------
 
 /**
+ * Decodes HTML entities in a string using text-based replacement.
+ * Handles common named and numeric entities.
+ * @param {string} value
+ * @returns {string}
+ */
+function decodeHtmlEntities(value) {
+	if (!value || typeof value !== "string") {
+		return value;
+	}
+	return value
+		.replace(/&amp;/g, "&")
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;|&apos;/g, "'")
+		.replace(/&#(x?)([0-9a-fA-F]+);/g, (m, hex, code) => {
+			const n = hex ? parseInt(code, 16) : parseInt(code, 10);
+			return String.fromCodePoint(n);
+		});
+}
+
+/**
  * Recursively extracts a microdata item as a JSON object.
  * @param {any} itemElem
  * @param {Set<any>} memory
@@ -125,7 +147,7 @@ function extractMicrodataItem(itemElem, memory = new Set()) {
 				continue; // skip cyclic reference
 			}
 		} else if (elem.tagName === "META") {
-			value = elem.getAttribute("content") || "";
+			value = decodeHtmlEntities(elem.getAttribute("content") || "");
 		} else if (["A", "AREA", "LINK"].includes(elem.tagName)) {
 			value = elem.getAttribute("href") || "";
 		} else if (
@@ -232,11 +254,13 @@ export class WebpageMetaExtractor {
 		for (const tag of metaTags) {
 			const property = tag.getAttribute("property");
 			const name = tag.getAttribute("name");
-			const content = tag.getAttribute("content");
+			const contentRaw = tag.getAttribute("content");
 
-			if (!content) {
+			if (!contentRaw) {
 				continue;
 			}
+
+			const content = decodeHtmlEntities(contentRaw);
 
 			// Special Open Graph image handling (property only)
 			if (property && property.startsWith(OG_PREFIX)) {
@@ -253,9 +277,11 @@ export class WebpageMetaExtractor {
 					} else if (subKey === "type") {
 						lastImage.type = content;
 					} else if (subKey === "width") {
-						lastImage.width = content;
+						const num = Number(content);
+						lastImage.width = Number.isNaN(num) ? undefined : num;
 					} else if (subKey === "height") {
-						lastImage.height = content;
+						const num = Number(content);
+						lastImage.height = Number.isNaN(num) ? undefined : num;
 					} else if (subKey === "alt") {
 						lastImage.alt = content;
 					}
@@ -275,9 +301,11 @@ export class WebpageMetaExtractor {
 					} else if (subKey === "type") {
 						lastVideo.type = content;
 					} else if (subKey === "width") {
-						lastVideo.width = content;
+						const num = Number(content);
+						lastVideo.width = Number.isNaN(num) ? undefined : num;
 					} else if (subKey === "height") {
-						lastVideo.height = content;
+						const num = Number(content);
+						lastVideo.height = Number.isNaN(num) ? undefined : num;
 					} else if (subKey === "alt") {
 						lastVideo.alt = content;
 					}

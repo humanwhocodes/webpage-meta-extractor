@@ -516,15 +516,15 @@ describe("WebpageMetaExtractor", () => {
 				url: "vid1.mp4",
 				secureUrl: "https://vid1-secure.mp4",
 				type: "video/mp4",
-				width: "1280",
-				height: "720",
+				width: 1280,
+				height: 720,
 				alt: "First video",
 			});
 			assert.deepStrictEqual(toPlain(meta.videos[1]), {
 				url: "vid2.webm",
 				secureUrl: undefined,
 				type: undefined,
-				width: "1920",
+				width: 1920,
 				height: undefined,
 				alt: "Second video",
 			});
@@ -592,16 +592,16 @@ describe("WebpageMetaExtractor", () => {
 				url: "vid1.mp4",
 				secureUrl: undefined,
 				type: undefined,
-				width: "1280",
-				height: "720",
+				width: 1280,
+				height: 720,
 				alt: "First video",
 			});
 			assert.deepStrictEqual(toPlain(meta.videos[1]), {
 				url: "vid2.webm",
 				secureUrl: undefined,
 				type: undefined,
-				width: "1920",
-				height: "1080",
+				width: 1920,
+				height: 1080,
 				alt: "Second video",
 			});
 		});
@@ -647,18 +647,24 @@ describe("WebpageMetaExtractor", () => {
 				url: "img1.jpg",
 				secureUrl: "https://img1-secure.jpg",
 				type: "image/jpeg",
-				width: "600",
-				height: "400",
+				width: 600,
+				height: 400,
 				alt: "First image",
 			});
+			assert.strictEqual(typeof meta.images[0].width, "number");
+			assert.strictEqual(typeof meta.images[0].height, "number");
+
 			assert.deepStrictEqual(toPlain(meta.images[1]), {
 				url: "img2.jpg",
 				secureUrl: undefined,
 				type: undefined,
-				width: "800",
+				width: 800,
 				height: undefined,
 				alt: "Second image",
 			});
+			assert.strictEqual(typeof meta.images[1].width, "number");
+			assert.strictEqual(meta.images[1].height, undefined);
+
 			assert.deepStrictEqual(toPlain(meta.images[2]), {
 				url: "img3.jpg",
 				secureUrl: undefined,
@@ -723,18 +729,46 @@ describe("WebpageMetaExtractor", () => {
 				url: "img1.jpg",
 				secureUrl: undefined,
 				type: undefined,
-				width: "600",
-				height: "400",
+				width: 600,
+				height: 400,
 				alt: "First image",
 			});
 			assert.deepStrictEqual(toPlain(meta.images[1]), {
 				url: "img2.jpg",
 				secureUrl: undefined,
 				type: undefined,
-				width: "800",
-				height: "500",
+				width: 800,
+				height: 500,
 				alt: "Second image",
 			});
 		});
+	});
+
+	it("should unescape HTML entities in meta tag content", () => {
+		const html = `
+	<html><head>
+		<meta property="og:title" content="Hello &amp; Welcome &lt;Test&gt;" />
+		<meta name="description" content="A &quot;quoted&quot; description &amp; more" />
+		<meta property="og:image:alt" content="Alt &amp; &lt;img&gt;" />
+	</head></html>
+	`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.deepStrictEqual(meta.meta.get("og:title"), [
+			"Hello & Welcome <Test>",
+		]);
+		assert.deepStrictEqual(meta.meta.get("description"), [
+			'A "quoted" description & more',
+		]);
+		// Also check og:image:alt is unescaped in images array
+		const imgHtml = `
+	<html><head>
+		<meta property="og:image" content="img.jpg" />
+		<meta property="og:image:alt" content="Alt &amp; &lt;img&gt;" />
+	</head></html>
+	`;
+		const imgDom = new JSDOM(imgHtml);
+		const imgMeta = extractor.extract(imgDom.window.document);
+		assert.strictEqual(imgMeta.images[0].alt, "Alt & <img>");
 	});
 });

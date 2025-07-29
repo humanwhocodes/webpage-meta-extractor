@@ -124,6 +124,10 @@ console.log(meta.microdata);
 
 - Throws `TypeError` with message `"Expected a DOM Document with querySelectorAll."` if input is not a valid DOM Document.
 
+## Notes on HTML Entities
+
+All meta tag content values are automatically unescaped (HTML entities such as `&amp;`, `&lt;`, `&quot;`, etc. are converted to their literal characters) during extraction. This ensures that the returned values are ready for use without further decoding.
+
 #### Example with Feeds
 
 ```js

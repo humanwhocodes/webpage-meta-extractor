@@ -28,13 +28,13 @@ export class WebpageImage {
 
 	/**
 	 * The image width (optional).
-	 * @type {string|undefined}
+	 * @type {number|undefined}
 	 */
 	width;
 
 	/**
 	 * The image height (optional).
-	 * @type {string|undefined}
+	 * @type {number|undefined}
 	 */
 	height;
 
@@ -50,8 +50,8 @@ export class WebpageImage {
 	 * @param {object} [options] Optional image properties.
 	 * @param {string} [options.secureUrl] The secure image URL.
 	 * @param {string} [options.type] The image type.
-	 * @param {string} [options.width] The image width.
-	 * @param {string} [options.height] The image height.
+	 * @param {number} [options.width] The image width.
+	 * @param {number} [options.height] The image height.
 	 * @param {string} [options.alt] The image alt text.
 	 * @throws {TypeError} If url is missing.
 	 */

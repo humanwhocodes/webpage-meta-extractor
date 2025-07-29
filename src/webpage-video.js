@@ -28,13 +28,13 @@ export class WebpageVideo {
 
 	/**
 	 * The video width (optional).
-	 * @type {string|undefined}
+	 * @type {number|undefined}
 	 */
 	width;
 
 	/**
 	 * The video height (optional).
-	 * @type {string|undefined}
+	 * @type {number|undefined}
 	 */
 	height;
 
@@ -50,8 +50,8 @@ export class WebpageVideo {
 	 * @param {object} [options] Optional video properties.
 	 * @param {string} [options.secureUrl] The secure video URL.
 	 * @param {string} [options.type] The video type.
-	 * @param {string} [options.width] The video width.
-	 * @param {string} [options.height] The video height.
+	 * @param {number} [options.width] The video width.
+	 * @param {number} [options.height] The video height.
 	 * @param {string} [options.alt] The video alt text.
 	 * @throws {TypeError} If url is missing.
 	 */
