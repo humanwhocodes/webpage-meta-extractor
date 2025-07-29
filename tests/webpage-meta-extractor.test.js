@@ -98,6 +98,7 @@ describe("WebpageMetaExtractor", () => {
 			assert.deepStrictEqual(meta.meta.get("description"), ["desc"]);
 		}
 	});
+
 	describe("feeds array content-type filtering", () => {
 		it("should include only RSS, Atom, and JSONFeed feeds", () => {
 			const html = `
@@ -140,37 +141,39 @@ describe("WebpageMetaExtractor", () => {
 			assert.strictEqual(feeds.length, 0);
 		});
 	});
-	it('should extract canonicalUrl from <link rel="canonical">', () => {
-		const html = `
-			<html><head>
-				<link rel="canonical" href="https://example.com/canonical-url" />
-			</head></html>
-		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(
-			meta.canonicalUrl,
-			"https://example.com/canonical-url",
-		);
+
+	describe("Canonical URLs", () => {
+		it('should extract canonicalUrl from <link rel="canonical">', () => {
+			const html = `
+				<html><head>
+					<link rel="canonical" href="https://example.com/canonical-url" />
+				</head></html>
+			`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(
+				meta.canonicalUrl,
+				"https://example.com/canonical-url",
+			);
+		});
+
+		it('should set canonicalUrl to undefined if <link rel="canonical"> is missing', () => {
+			const html = `<html><head></head></html>`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.canonicalUrl, undefined);
+		});
 	});
 
-	it('should set canonicalUrl to undefined if <link rel="canonical"> is missing', () => {
-		const html = `<html><head></head></html>`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.canonicalUrl, undefined);
-	});
-});
+	describe("WebpageMetaExtractor meta property population", () => {
+		let extractor;
 
-describe("WebpageMetaExtractor meta property population", () => {
-	let extractor;
+		beforeEach(() => {
+			extractor = new WebpageMetaExtractor();
+		});
 
-	beforeEach(() => {
-		extractor = new WebpageMetaExtractor();
-	});
-
-	it("should include all meta tags (og:, twitter:, and others) from both property and name attributes in meta property", () => {
-		const html = `
+		it("should include all meta tags (og:, twitter:, and others) from both property and name attributes in meta property", () => {
+			const html = `
 			<html><head>
 				<meta property="og:title" content="OG Title Property" />
 				<meta name="og:title" content="OG Title Name" />
@@ -181,37 +184,37 @@ describe("WebpageMetaExtractor meta property population", () => {
 				<meta name="custom" content="Custom Name" />
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
 
-		// og:title
-		assert.deepStrictEqual(meta.meta.get("og:title"), [
-			"OG Title Property",
-			"OG Title Name",
-		]);
-		// twitter:title
-		assert.deepStrictEqual(meta.meta.get("twitter:title"), [
-			"Twitter Title Property",
-			"Twitter Title Name",
-		]);
-		// description
-		assert.deepStrictEqual(meta.meta.get("description"), [
-			"Description Property",
-			"Description Name",
-		]);
-		// custom
-		assert.deepStrictEqual(meta.meta.get("custom"), ["Custom Name"]);
-	});
-});
-
-describe("WebpageMetaExtractor microdata extraction", () => {
-	let extractor;
-	beforeEach(() => {
-		extractor = new WebpageMetaExtractor();
+			// og:title
+			assert.deepStrictEqual(meta.meta.get("og:title"), [
+				"OG Title Property",
+				"OG Title Name",
+			]);
+			// twitter:title
+			assert.deepStrictEqual(meta.meta.get("twitter:title"), [
+				"Twitter Title Property",
+				"Twitter Title Name",
+			]);
+			// description
+			assert.deepStrictEqual(meta.meta.get("description"), [
+				"Description Property",
+				"Description Name",
+			]);
+			// custom
+			assert.deepStrictEqual(meta.meta.get("custom"), ["Custom Name"]);
+		});
 	});
 
-	it("should extract a simple microdata item", () => {
-		const html = `
+	describe("WebpageMetaExtractor microdata extraction", () => {
+		let extractor;
+		beforeEach(() => {
+			extractor = new WebpageMetaExtractor();
+		});
+
+		it("should extract a simple microdata item", () => {
+			const html = `
 			<html><body>
 				<div itemscope itemtype="http://schema.org/Person">
 					<span itemprop="name">Alice</span>
@@ -219,21 +222,21 @@ describe("WebpageMetaExtractor microdata extraction", () => {
 				</div>
 			</body></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Person"],
-				properties: {
-					name: ["Alice"],
-					jobTitle: ["Engineer"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Person"],
+					properties: {
+						name: ["Alice"],
+						jobTitle: ["Engineer"],
+					},
 				},
-			},
-		]);
-	});
+			]);
+		});
 
-	it("should extract nested microdata items", () => {
-		const html = `
+		it("should extract nested microdata items", () => {
+			const html = `
 			<html><body>
 				<div itemscope itemtype="http://schema.org/Person">
 					<span itemprop="name">Bob</span>
@@ -244,29 +247,29 @@ describe("WebpageMetaExtractor microdata extraction", () => {
 				</div>
 			</body></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Person"],
-				properties: {
-					name: ["Bob"],
-					address: [
-						{
-							type: ["http://schema.org/PostalAddress"],
-							properties: {
-								streetAddress: ["123 Main St"],
-								addressLocality: ["Metropolis"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Person"],
+					properties: {
+						name: ["Bob"],
+						address: [
+							{
+								type: ["http://schema.org/PostalAddress"],
+								properties: {
+									streetAddress: ["123 Main St"],
+									addressLocality: ["Metropolis"],
+								},
 							},
-						},
-					],
+						],
+					},
 				},
-			},
-		]);
-	});
+			]);
+		});
 
-	it("should extract multiple top-level microdata items", () => {
-		const html = `
+		it("should extract multiple top-level microdata items", () => {
+			const html = `
 			<html><body>
 				<div itemscope itemtype="http://schema.org/Person">
 					<span itemprop="name">Carol</span>
@@ -276,26 +279,26 @@ describe("WebpageMetaExtractor microdata extraction", () => {
 				</div>
 			</body></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Person"],
-				properties: {
-					name: ["Carol"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Person"],
+					properties: {
+						name: ["Carol"],
+					},
 				},
-			},
-			{
-				type: ["http://schema.org/Person"],
-				properties: {
-					name: ["Dave"],
+				{
+					type: ["http://schema.org/Person"],
+					properties: {
+						name: ["Dave"],
+					},
 				},
-			},
-		]);
-	});
+			]);
+		});
 
-	it("should extract itemid and various value types", () => {
-		const html = `
+		it("should extract itemid and various value types", () => {
+			const html = `
 			<html><body>
 				<div itemscope itemtype="http://schema.org/Thing" itemid="#thing1">
 					<meta itemprop="metaProp" content="metaValue">
@@ -305,73 +308,73 @@ describe("WebpageMetaExtractor microdata extraction", () => {
 				</div>
 			</body></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Thing"],
-				id: "#thing1",
-				properties: {
-					metaProp: ["metaValue"],
-					url: ["https://example.com"],
-					date: ["2020-01-01"],
-					text: ["Some text"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Thing"],
+					id: "#thing1",
+					properties: {
+						metaProp: ["metaValue"],
+						url: ["https://example.com"],
+						date: ["2020-01-01"],
+						text: ["Some text"],
+					},
 				},
-			},
-		]);
-	});
+			]);
+		});
 
-	it("should handle cycles gracefully (itemref self-reference)", () => {
-		const html = `
+		it("should handle cycles gracefully (itemref self-reference)", () => {
+			const html = `
 				<html><body>
 					<div itemscope itemtype="http://schema.org/Thing" id="item1" itemref="item1">
 						<span itemprop="name">Cycle</span>
 					</div>
 				</body></html>
 			`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Thing"],
-				properties: {
-					name: ["Cycle"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Thing"],
+					properties: {
+						name: ["Cycle"],
+					},
 				},
-			},
-		]);
-	});
+			]);
+		});
 
-	it("should support multiple itemprop names on one element", () => {
-		const html = `
+		it("should support multiple itemprop names on one element", () => {
+			const html = `
 			<html><body>
 				<div itemscope itemtype="http://schema.org/Thing">
 					<span itemprop="foo bar">baz</span>
 				</div>
 			</body></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.deepStrictEqual(meta.microdata, [
-			{
-				type: ["http://schema.org/Thing"],
-				properties: {
-					foo: ["baz"],
-					bar: ["baz"],
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: ["http://schema.org/Thing"],
+					properties: {
+						foo: ["baz"],
+						bar: ["baz"],
+					},
 				},
-			},
-		]);
-	});
-});
-
-describe("WebpageMetaExtractor JSON-LD", () => {
-	let extractor;
-
-	beforeEach(() => {
-		extractor = new WebpageMetaExtractor();
+			]);
+		});
 	});
 
-	it("should extract JSON-LD data from script tags", () => {
-		const html = `
+	describe("WebpageMetaExtractor JSON-LD", () => {
+		let extractor;
+
+		beforeEach(() => {
+			extractor = new WebpageMetaExtractor();
+		});
+
+		it("should extract JSON-LD data from script tags", () => {
+			const html = `
 			<html><head>
 				<script type="application/ld+json">
 					{"@context": "https://schema.org", "@type": "Person", "name": "John Doe"}
@@ -381,37 +384,37 @@ describe("WebpageMetaExtractor JSON-LD", () => {
 				</script>
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(Array.isArray(meta.jsonld), true);
-		assert.strictEqual(meta.jsonld.length, 2);
-		assert.deepStrictEqual(meta.jsonld[0], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "John Doe",
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(Array.isArray(meta.jsonld), true);
+			assert.strictEqual(meta.jsonld.length, 2);
+			assert.deepStrictEqual(meta.jsonld[0], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "John Doe",
+			});
+			assert.deepStrictEqual(meta.jsonld[1], {
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				name: "Acme Corp",
+			});
 		});
-		assert.deepStrictEqual(meta.jsonld[1], {
-			"@context": "https://schema.org",
-			"@type": "Organization",
-			name: "Acme Corp",
-		});
-	});
 
-	it("should ignore malformed JSON-LD", () => {
-		const html = `
+		it("should ignore malformed JSON-LD", () => {
+			const html = `
 			<html><head>
 				<script type="application/ld+json">{bad json}</script>
 				<script type="application/ld+json">{"@type": "Test"}</script>
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.jsonld.length, 1);
-		assert.deepStrictEqual(meta.jsonld[0], { "@type": "Test" });
-	});
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.jsonld.length, 1);
+			assert.deepStrictEqual(meta.jsonld[0], { "@type": "Test" });
+		});
 
-	it("should extract JSON-LD when script contains an array of objects", () => {
-		const html = `
+		it("should extract JSON-LD when script contains an array of objects", () => {
+			const html = `
 			<html><head>
 				<script type="application/ld+json">
 					[
@@ -421,24 +424,24 @@ describe("WebpageMetaExtractor JSON-LD", () => {
 				</script>
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(Array.isArray(meta.jsonld), true);
-		assert.strictEqual(meta.jsonld.length, 2);
-		assert.deepStrictEqual(meta.jsonld[0], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "Alice",
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(Array.isArray(meta.jsonld), true);
+			assert.strictEqual(meta.jsonld.length, 2);
+			assert.deepStrictEqual(meta.jsonld[0], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Alice",
+			});
+			assert.deepStrictEqual(meta.jsonld[1], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Bob",
+			});
 		});
-		assert.deepStrictEqual(meta.jsonld[1], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "Bob",
-		});
-	});
 
-	it("should extract JSON-LD with both object and array script tags", () => {
-		const html = `
+		it("should extract JSON-LD with both object and array script tags", () => {
+			const html = `
 			<html><head>
 				<script type="application/ld+json">
 					{"@context": "https://schema.org", "@type": "Person", "name": "Carol"}
@@ -451,37 +454,37 @@ describe("WebpageMetaExtractor JSON-LD", () => {
 				</script>
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(Array.isArray(meta.jsonld), true);
-		assert.strictEqual(meta.jsonld.length, 3);
-		assert.deepStrictEqual(meta.jsonld[0], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "Carol",
-		});
-		assert.deepStrictEqual(meta.jsonld[1], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "Dave",
-		});
-		assert.deepStrictEqual(meta.jsonld[2], {
-			"@context": "https://schema.org",
-			"@type": "Person",
-			name: "Eve",
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(Array.isArray(meta.jsonld), true);
+			assert.strictEqual(meta.jsonld.length, 3);
+			assert.deepStrictEqual(meta.jsonld[0], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Carol",
+			});
+			assert.deepStrictEqual(meta.jsonld[1], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Dave",
+			});
+			assert.deepStrictEqual(meta.jsonld[2], {
+				"@context": "https://schema.org",
+				"@type": "Person",
+				name: "Eve",
+			});
 		});
 	});
-});
 
-describe("WebpageMeta videos property", () => {
-	let extractor;
+	describe("WebpageMeta videos property", () => {
+		let extractor;
 
-	beforeEach(() => {
-		extractor = new WebpageMetaExtractor();
-	});
+		beforeEach(() => {
+			extractor = new WebpageMetaExtractor();
+		});
 
-	it("should extract all og:video meta fields as WebpageVideo objects", () => {
-		const html = `
+		it("should extract all og:video meta fields as WebpageVideo objects", () => {
+			const html = `
 			<html><head>
 				<meta property="og:video" content="vid1.mp4" />
 				<meta property="og:video:width" content="1280" />
@@ -495,72 +498,72 @@ describe("WebpageMeta videos property", () => {
 				<meta property="og:video" content="vid3.ogv" />
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(Array.isArray(meta.videos), true);
-		assert.strictEqual(meta.videos.length, 3);
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(Array.isArray(meta.videos), true);
+			assert.strictEqual(meta.videos.length, 3);
 
-		const toPlain = vid => ({
-			url: vid.url,
-			secureUrl: vid.secureUrl,
-			type: vid.type,
-			width: vid.width,
-			height: vid.height,
-			alt: vid.alt,
+			const toPlain = vid => ({
+				url: vid.url,
+				secureUrl: vid.secureUrl,
+				type: vid.type,
+				width: vid.width,
+				height: vid.height,
+				alt: vid.alt,
+			});
+
+			assert.deepStrictEqual(toPlain(meta.videos[0]), {
+				url: "vid1.mp4",
+				secureUrl: "https://vid1-secure.mp4",
+				type: "video/mp4",
+				width: "1280",
+				height: "720",
+				alt: "First video",
+			});
+			assert.deepStrictEqual(toPlain(meta.videos[1]), {
+				url: "vid2.webm",
+				secureUrl: undefined,
+				type: undefined,
+				width: "1920",
+				height: undefined,
+				alt: "Second video",
+			});
+			assert.deepStrictEqual(toPlain(meta.videos[2]), {
+				url: "vid3.ogv",
+				secureUrl: undefined,
+				type: undefined,
+				width: undefined,
+				height: undefined,
+				alt: undefined,
+			});
 		});
 
-		assert.deepStrictEqual(toPlain(meta.videos[0]), {
-			url: "vid1.mp4",
-			secureUrl: "https://vid1-secure.mp4",
-			type: "video/mp4",
-			width: "1280",
-			height: "720",
-			alt: "First video",
-		});
-		assert.deepStrictEqual(toPlain(meta.videos[1]), {
-			url: "vid2.webm",
-			secureUrl: undefined,
-			type: undefined,
-			width: "1920",
-			height: undefined,
-			alt: "Second video",
-		});
-		assert.deepStrictEqual(toPlain(meta.videos[2]), {
-			url: "vid3.ogv",
-			secureUrl: undefined,
-			type: undefined,
-			width: undefined,
-			height: undefined,
-			alt: undefined,
-		});
-	});
-
-	it("should treat og:video and og:video:url as the same for url", () => {
-		const html = `
+		it("should treat og:video and og:video:url as the same for url", () => {
+			const html = `
 			<html><head>
 				<meta property="og:video:url" content="vid-url.mp4" />
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.videos.length, 1);
-		assert.strictEqual(meta.videos[0].url, "vid-url.mp4");
-	});
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.videos.length, 1);
+			assert.strictEqual(meta.videos[0].url, "vid-url.mp4");
+		});
 
-	it("should not include videos without a url", () => {
-		const html = `
+		it("should not include videos without a url", () => {
+			const html = `
 			<html><head>
 				<meta property="og:video:width" content="1280" />
 				<meta property="og:video:alt" content="No url video" />
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.videos.length, 0);
-	});
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.videos.length, 0);
+		});
 
-	it("should support both og:video and og:video:url with structured properties for each video", () => {
-		const html = `
+		it("should support both og:video and og:video:url with structured properties for each video", () => {
+			const html = `
 			<html><head>
 				<meta property="og:video" content="vid1.mp4" />
 				<meta property="og:video:width" content="1280" />
@@ -572,34 +575,166 @@ describe("WebpageMeta videos property", () => {
 				<meta property="og:video:alt" content="Second video" />
 			</head></html>
 		`;
-		const dom = new JSDOM(html);
-		const meta = extractor.extract(dom.window.document);
-		assert.strictEqual(meta.videos.length, 2);
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.videos.length, 2);
 
-		const toPlain = vid => ({
-			url: vid.url,
-			secureUrl: vid.secureUrl,
-			type: vid.type,
-			width: vid.width,
-			height: vid.height,
-			alt: vid.alt,
+			const toPlain = vid => ({
+				url: vid.url,
+				secureUrl: vid.secureUrl,
+				type: vid.type,
+				width: vid.width,
+				height: vid.height,
+				alt: vid.alt,
+			});
+
+			assert.deepStrictEqual(toPlain(meta.videos[0]), {
+				url: "vid1.mp4",
+				secureUrl: undefined,
+				type: undefined,
+				width: "1280",
+				height: "720",
+				alt: "First video",
+			});
+			assert.deepStrictEqual(toPlain(meta.videos[1]), {
+				url: "vid2.webm",
+				secureUrl: undefined,
+				type: undefined,
+				width: "1920",
+				height: "1080",
+				alt: "Second video",
+			});
+		});
+	});
+
+	describe("WebpageMetaExtractor images extraction", () => {
+		let extractor;
+
+		beforeEach(() => {
+			extractor = new WebpageMetaExtractor();
 		});
 
-		assert.deepStrictEqual(toPlain(meta.videos[0]), {
-			url: "vid1.mp4",
-			secureUrl: undefined,
-			type: undefined,
-			width: "1280",
-			height: "720",
-			alt: "First video",
+		it("should extract all og:image meta fields as MetaImage objects", () => {
+			const html = `
+			<html><head>
+				<meta property="og:image" content="img1.jpg" />
+				<meta property="og:image:width" content="600" />
+				<meta property="og:image:height" content="400" />
+				<meta property="og:image:alt" content="First image" />
+				<meta property="og:image:secure_url" content="https://img1-secure.jpg" />
+				<meta property="og:image:type" content="image/jpeg" />
+				<meta property="og:image" content="img2.jpg" />
+				<meta property="og:image:width" content="800" />
+				<meta property="og:image:alt" content="Second image" />
+				<meta property="og:image" content="img3.jpg" />
+			</head></html>
+		`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(Array.isArray(meta.images), true);
+			assert.strictEqual(meta.images.length, 3);
+
+			const toPlain = img => ({
+				url: img.url,
+				secureUrl: img.secureUrl,
+				type: img.type,
+				width: img.width,
+				height: img.height,
+				alt: img.alt,
+			});
+
+			assert.deepStrictEqual(toPlain(meta.images[0]), {
+				url: "img1.jpg",
+				secureUrl: "https://img1-secure.jpg",
+				type: "image/jpeg",
+				width: "600",
+				height: "400",
+				alt: "First image",
+			});
+			assert.deepStrictEqual(toPlain(meta.images[1]), {
+				url: "img2.jpg",
+				secureUrl: undefined,
+				type: undefined,
+				width: "800",
+				height: undefined,
+				alt: "Second image",
+			});
+			assert.deepStrictEqual(toPlain(meta.images[2]), {
+				url: "img3.jpg",
+				secureUrl: undefined,
+				type: undefined,
+				width: undefined,
+				height: undefined,
+				alt: undefined,
+			});
 		});
-		assert.deepStrictEqual(toPlain(meta.videos[1]), {
-			url: "vid2.webm",
-			secureUrl: undefined,
-			type: undefined,
-			width: "1920",
-			height: "1080",
-			alt: "Second video",
+
+		it("should treat og:image and og:image:url as the same for url", () => {
+			const html = `
+			<html><head>
+				<meta property="og:image:url" content="img-url.jpg" />
+			</head></html>
+		`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.images.length, 1);
+			assert.strictEqual(meta.images[0].url, "img-url.jpg");
+		});
+
+		it("should not include images without a url", () => {
+			const html = `
+			<html><head>
+				<meta property="og:image:width" content="600" />
+				<meta property="og:image:alt" content="No url image" />
+			</head></html>
+		`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.images.length, 0);
+		});
+
+		it("should support both og:image and og:image:url with structured properties for each image", () => {
+			const html = `
+			<html><head>
+				<meta property="og:image" content="img1.jpg" />
+				<meta property="og:image:width" content="600" />
+				<meta property="og:image:height" content="400" />
+				<meta property="og:image:alt" content="First image" />
+				<meta property="og:image:url" content="img2.jpg" />
+				<meta property="og:image:width" content="800" />
+				<meta property="og:image:height" content="500" />
+				<meta property="og:image:alt" content="Second image" />
+			</head></html>
+		`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.strictEqual(meta.images.length, 2);
+
+			const toPlain = img => ({
+				url: img.url,
+				secureUrl: img.secureUrl,
+				type: img.type,
+				width: img.width,
+				height: img.height,
+				alt: img.alt,
+			});
+
+			assert.deepStrictEqual(toPlain(meta.images[0]), {
+				url: "img1.jpg",
+				secureUrl: undefined,
+				type: undefined,
+				width: "600",
+				height: "400",
+				alt: "First image",
+			});
+			assert.deepStrictEqual(toPlain(meta.images[1]), {
+				url: "img2.jpg",
+				secureUrl: undefined,
+				type: undefined,
+				width: "800",
+				height: "500",
+				alt: "Second image",
+			});
 		});
 	});
 });
