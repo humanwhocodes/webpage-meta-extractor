@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.6.0...webpage-meta-extractor-v0.7.0) (2025-07-29)
+
+
+### Features
+
+* Add video property; unescape HTML entities ([0f388e3](https://github.com/humanwhocodes/webpage-meta-extractor/commit/0f388e3fafb2abe388100f3e967af5588f51ff24))
+* Add WebpageMeta#videos ([7724c05](https://github.com/humanwhocodes/webpage-meta-extractor/commit/7724c052b81ee70a16c5c3eb579524fc11e7bfa2))
+
+
+### Bug Fixes
+
+* Ensure JSON-LD arrays are honored ([d03036f](https://github.com/humanwhocodes/webpage-meta-extractor/commit/d03036fa302b55c0d42726667b58cbbd0b24ca6e))
+
 ## [0.6.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.5.2...webpage-meta-extractor-v0.6.0) (2025-07-23)
 
 
