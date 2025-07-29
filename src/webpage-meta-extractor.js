@@ -11,6 +11,7 @@ import { WebpageMeta } from "./webpage-meta.js";
 import { WebpageFeed } from "./webpage-feed.js";
 import { WebpageImage } from "./webpage-image.js";
 import { WebpageFavicon } from "./webpage-favicon.js";
+import { WebpageVideo } from "./webpage-video.js";
 
 //-----------------------------------------------------------------------------
 // Data
@@ -257,6 +258,28 @@ export class WebpageMetaExtractor {
 						lastImage.height = content;
 					} else if (subKey === "alt") {
 						lastImage.alt = content;
+					}
+				}
+
+				// --- VIDEO HANDLING ---
+				if (property === "og:video" || property === "og:video:url") {
+					result.videos.push(new WebpageVideo(content));
+				} else if (
+					property.startsWith("og:video:") &&
+					result.videos.length > 0
+				) {
+					const lastVideo = result.videos[result.videos.length - 1];
+					const subKey = property.slice("og:video:".length);
+					if (subKey === "secure_url") {
+						lastVideo.secureUrl = content;
+					} else if (subKey === "type") {
+						lastVideo.type = content;
+					} else if (subKey === "width") {
+						lastVideo.width = content;
+					} else if (subKey === "height") {
+						lastVideo.height = content;
+					} else if (subKey === "alt") {
+						lastVideo.alt = content;
 					}
 				}
 			}

@@ -472,3 +472,134 @@ describe("WebpageMetaExtractor JSON-LD", () => {
 		});
 	});
 });
+
+describe("WebpageMeta videos property", () => {
+	let extractor;
+
+	beforeEach(() => {
+		extractor = new WebpageMetaExtractor();
+	});
+
+	it("should extract all og:video meta fields as WebpageVideo objects", () => {
+		const html = `
+			<html><head>
+				<meta property="og:video" content="vid1.mp4" />
+				<meta property="og:video:width" content="1280" />
+				<meta property="og:video:height" content="720" />
+				<meta property="og:video:alt" content="First video" />
+				<meta property="og:video:secure_url" content="https://vid1-secure.mp4" />
+				<meta property="og:video:type" content="video/mp4" />
+				<meta property="og:video" content="vid2.webm" />
+				<meta property="og:video:width" content="1920" />
+				<meta property="og:video:alt" content="Second video" />
+				<meta property="og:video" content="vid3.ogv" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(Array.isArray(meta.videos), true);
+		assert.strictEqual(meta.videos.length, 3);
+
+		const toPlain = vid => ({
+			url: vid.url,
+			secureUrl: vid.secureUrl,
+			type: vid.type,
+			width: vid.width,
+			height: vid.height,
+			alt: vid.alt,
+		});
+
+		assert.deepStrictEqual(toPlain(meta.videos[0]), {
+			url: "vid1.mp4",
+			secureUrl: "https://vid1-secure.mp4",
+			type: "video/mp4",
+			width: "1280",
+			height: "720",
+			alt: "First video",
+		});
+		assert.deepStrictEqual(toPlain(meta.videos[1]), {
+			url: "vid2.webm",
+			secureUrl: undefined,
+			type: undefined,
+			width: "1920",
+			height: undefined,
+			alt: "Second video",
+		});
+		assert.deepStrictEqual(toPlain(meta.videos[2]), {
+			url: "vid3.ogv",
+			secureUrl: undefined,
+			type: undefined,
+			width: undefined,
+			height: undefined,
+			alt: undefined,
+		});
+	});
+
+	it("should treat og:video and og:video:url as the same for url", () => {
+		const html = `
+			<html><head>
+				<meta property="og:video:url" content="vid-url.mp4" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.videos.length, 1);
+		assert.strictEqual(meta.videos[0].url, "vid-url.mp4");
+	});
+
+	it("should not include videos without a url", () => {
+		const html = `
+			<html><head>
+				<meta property="og:video:width" content="1280" />
+				<meta property="og:video:alt" content="No url video" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.videos.length, 0);
+	});
+
+	it("should support both og:video and og:video:url with structured properties for each video", () => {
+		const html = `
+			<html><head>
+				<meta property="og:video" content="vid1.mp4" />
+				<meta property="og:video:width" content="1280" />
+				<meta property="og:video:height" content="720" />
+				<meta property="og:video:alt" content="First video" />
+				<meta property="og:video:url" content="vid2.webm" />
+				<meta property="og:video:width" content="1920" />
+				<meta property="og:video:height" content="1080" />
+				<meta property="og:video:alt" content="Second video" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.videos.length, 2);
+
+		const toPlain = vid => ({
+			url: vid.url,
+			secureUrl: vid.secureUrl,
+			type: vid.type,
+			width: vid.width,
+			height: vid.height,
+			alt: vid.alt,
+		});
+
+		assert.deepStrictEqual(toPlain(meta.videos[0]), {
+			url: "vid1.mp4",
+			secureUrl: undefined,
+			type: undefined,
+			width: "1280",
+			height: "720",
+			alt: "First video",
+		});
+		assert.deepStrictEqual(toPlain(meta.videos[1]), {
+			url: "vid2.webm",
+			secureUrl: undefined,
+			type: undefined,
+			width: "1920",
+			height: "1080",
+			alt: "Second video",
+		});
+	});
+});

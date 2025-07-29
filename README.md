@@ -103,13 +103,20 @@ console.log(meta.microdata);
 - `url` — Canonical URL (string or undefined)
 - `siteName` — Site name (string or undefined)
 - `jsonld` — Array of all JSON-LD data found in `<script type="application/ld+json">` tags. Each element is a parsed JSON object.
-- `images` — Array of all Open Graph images found on the page. Each item is a `MetaImage` object with the following properties:
-    - `url` (string, required): The image URL (from `og:image` or `og:image:url`)
-    - `secureUrl` (string, optional): Secure image URL (`og:image:secure_url`)
-    - `type` (string, optional): Image MIME type (`og:image:type`)
-    - `width` (string, optional): Image width in pixels (`og:image:width`)
-    - `height` (string, optional): Image height in pixels (`og:image:height`)
-    - `alt` (string, optional): Image alt text (`og:image:alt`)
+- `images` — Array of all Open Graph images found on the page. Each item is a `WebpageImage` object with:
+    - `url` (string): The image URL
+    - `secureUrl` (string, optional): The secure image URL
+    - `type` (string, optional): The image MIME type
+    - `width` (string, optional): The image width
+    - `height` (string, optional): The image height
+    - `alt` (string, optional): The image alt text
+- `videos` — Array of all Open Graph videos found on the page. Each item is a `WebpageVideo` object with:
+    - `url` (string): The video URL
+    - `secureUrl` (string, optional): The secure video URL
+    - `type` (string, optional): The video MIME type
+    - `width` (string, optional): The video width
+    - `height` (string, optional): The video height
+    - `alt` (string, optional): The video alt text
 - `openGraphObject` — Returns an object representing the Open Graph object for the current page, based on the value of `og:type`. For any type, includes all properties in the format `og:type:property` (e.g., `article:published_time`, `profile:first_name`), with keys in their original format (not camelCase) and values from the Open Graph map. If a property occurs more than once, the value is an array. If the type is unknown or not present, returns an empty object.
 - `microdata` — Array of all top-level microdata items found in the page, following the [WHATWG microdata JSON extraction algorithm](https://html.spec.whatwg.org/multipage/microdata.html#json). Each entry is an object with optional `type` (array), optional `id` (string), and `properties` (object mapping property names to arrays of values, which may be strings or nested microdata objects).
 

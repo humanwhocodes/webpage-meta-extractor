@@ -11,6 +11,7 @@
  * @import { WebpageFeed } from "./webpage-feed.js";
  * @import { WebpageImage } from "./webpage-image.js";
  * @import { WebpageFavicon } from "./webpage-favicon.js";
+ * @import { WebpageVideo } from "./webpage-video.js";
  */
 
 //-----------------------------------------------------------------------------
@@ -54,6 +55,12 @@ export class WebpageMeta {
 	 * @type {WebpageFavicon[]}
 	 */
 	favicons = [];
+
+	/**
+	 * All Open Graph videos found on the page.
+	 * @type {import("./webpage-video.js").WebpageVideo[]}
+	 */
+	videos = [];
 
 	/**
 	 * The canonical URL for the page, if found.
