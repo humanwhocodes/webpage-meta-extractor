@@ -313,7 +313,13 @@ export class WebpageMetaExtractor {
 		for (const tag of scriptTags) {
 			try {
 				const json = JSON.parse(tag.textContent);
-				result.jsonld.push(json);
+				if (Array.isArray(json)) {
+					for (const item of json) {
+						result.jsonld.push(item);
+					}
+				} else {
+					result.jsonld.push(json);
+				}
 			} catch {
 				// Ignore JSON-LD parsing errors
 			}

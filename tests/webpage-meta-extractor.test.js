@@ -362,3 +362,113 @@ describe("WebpageMetaExtractor microdata extraction", () => {
 		]);
 	});
 });
+
+describe("WebpageMetaExtractor JSON-LD", () => {
+	let extractor;
+
+	beforeEach(() => {
+		extractor = new WebpageMetaExtractor();
+	});
+
+	it("should extract JSON-LD data from script tags", () => {
+		const html = `
+			<html><head>
+				<script type="application/ld+json">
+					{"@context": "https://schema.org", "@type": "Person", "name": "John Doe"}
+				</script>
+				<script type="application/ld+json">
+					{"@context": "https://schema.org", "@type": "Organization", "name": "Acme Corp"}
+				</script>
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(Array.isArray(meta.jsonld), true);
+		assert.strictEqual(meta.jsonld.length, 2);
+		assert.deepStrictEqual(meta.jsonld[0], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "John Doe",
+		});
+		assert.deepStrictEqual(meta.jsonld[1], {
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			name: "Acme Corp",
+		});
+	});
+
+	it("should ignore malformed JSON-LD", () => {
+		const html = `
+			<html><head>
+				<script type="application/ld+json">{bad json}</script>
+				<script type="application/ld+json">{"@type": "Test"}</script>
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.jsonld.length, 1);
+		assert.deepStrictEqual(meta.jsonld[0], { "@type": "Test" });
+	});
+
+	it("should extract JSON-LD when script contains an array of objects", () => {
+		const html = `
+			<html><head>
+				<script type="application/ld+json">
+					[
+						{"@context": "https://schema.org", "@type": "Person", "name": "Alice"},
+						{"@context": "https://schema.org", "@type": "Person", "name": "Bob"}
+					]
+				</script>
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(Array.isArray(meta.jsonld), true);
+		assert.strictEqual(meta.jsonld.length, 2);
+		assert.deepStrictEqual(meta.jsonld[0], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "Alice",
+		});
+		assert.deepStrictEqual(meta.jsonld[1], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "Bob",
+		});
+	});
+
+	it("should extract JSON-LD with both object and array script tags", () => {
+		const html = `
+			<html><head>
+				<script type="application/ld+json">
+					{"@context": "https://schema.org", "@type": "Person", "name": "Carol"}
+				</script>
+				<script type="application/ld+json">
+					[
+						{"@context": "https://schema.org", "@type": "Person", "name": "Dave"},
+						{"@context": "https://schema.org", "@type": "Person", "name": "Eve"}
+					]
+				</script>
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(Array.isArray(meta.jsonld), true);
+		assert.strictEqual(meta.jsonld.length, 3);
+		assert.deepStrictEqual(meta.jsonld[0], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "Carol",
+		});
+		assert.deepStrictEqual(meta.jsonld[1], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "Dave",
+		});
+		assert.deepStrictEqual(meta.jsonld[2], {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			name: "Eve",
+		});
+	});
+});
