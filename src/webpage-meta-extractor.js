@@ -64,6 +64,7 @@ function extractMicrodataItem(itemElem, memory = new Set()) {
 	if (memory.has(itemElem)) {
 		return undefined;
 	}
+	/** @type {{ [key: string]: any }} */
 	const result = {};
 	const nextMemory = new Set(memory);
 	nextMemory.add(itemElem);
@@ -73,7 +74,7 @@ function extractMicrodataItem(itemElem, memory = new Set()) {
 	if (itemtype) {
 		const types = itemtype.trim().split(/\s+/).filter(Boolean);
 		if (types.length) {
-			result.type = types;
+			result.type = types[0]; // always a string, not an array
 		}
 	}
 
@@ -180,7 +181,16 @@ function extractMicrodataItem(itemElem, memory = new Set()) {
 			properties[name].push(value);
 		}
 	}
-	result.properties = properties;
+
+	// Flatten properties to be direct keys and convert single-item arrays to values
+	for (const [key, values] of Object.entries(properties)) {
+		if (values.length === 1) {
+			result[key] = values[0];
+		} else {
+			result[key] = values;
+		}
+	}
+
 	return result;
 }
 

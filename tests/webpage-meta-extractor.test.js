@@ -226,11 +226,9 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Person"],
-					properties: {
-						name: ["Alice"],
-						jobTitle: ["Engineer"],
-					},
+					type: "http://schema.org/Person",
+					name: "Alice",
+					jobTitle: "Engineer",
 				},
 			]);
 		});
@@ -251,18 +249,12 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Person"],
-					properties: {
-						name: ["Bob"],
-						address: [
-							{
-								type: ["http://schema.org/PostalAddress"],
-								properties: {
-									streetAddress: ["123 Main St"],
-									addressLocality: ["Metropolis"],
-								},
-							},
-						],
+					type: "http://schema.org/Person",
+					name: "Bob",
+					address: {
+						type: "http://schema.org/PostalAddress",
+						streetAddress: "123 Main St",
+						addressLocality: "Metropolis",
 					},
 				},
 			]);
@@ -283,16 +275,12 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Person"],
-					properties: {
-						name: ["Carol"],
-					},
+					type: "http://schema.org/Person",
+					name: "Carol",
 				},
 				{
-					type: ["http://schema.org/Person"],
-					properties: {
-						name: ["Dave"],
-					},
+					type: "http://schema.org/Person",
+					name: "Dave",
 				},
 			]);
 		});
@@ -312,14 +300,12 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Thing"],
+					type: "http://schema.org/Thing",
 					id: "#thing1",
-					properties: {
-						metaProp: ["metaValue"],
-						url: ["https://example.com"],
-						date: ["2020-01-01"],
-						text: ["Some text"],
-					},
+					metaProp: "metaValue",
+					url: "https://example.com",
+					date: "2020-01-01",
+					text: "Some text",
 				},
 			]);
 		});
@@ -336,10 +322,8 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Thing"],
-					properties: {
-						name: ["Cycle"],
-					},
+					type: "http://schema.org/Thing",
+					name: "Cycle",
 				},
 			]);
 		});
@@ -356,11 +340,34 @@ describe("WebpageMetaExtractor", () => {
 			const meta = extractor.extract(dom.window.document);
 			assert.deepStrictEqual(meta.microdata, [
 				{
-					type: ["http://schema.org/Thing"],
-					properties: {
-						foo: ["baz"],
-						bar: ["baz"],
-					},
+					type: "http://schema.org/Thing",
+					foo: "baz",
+					bar: "baz",
+				},
+			]);
+		});
+
+		it("should preserve arrays for properties with multiple values", () => {
+			const html = `
+			<html><body>
+				<div itemscope itemtype="http://schema.org/Person">
+					<span itemprop="name">Alice</span>
+					<span itemprop="email">alice@example.com</span>
+					<span itemprop="email">alice.backup@example.com</span>
+					<span itemprop="skill">JavaScript</span>
+					<span itemprop="skill">TypeScript</span>
+					<span itemprop="skill">Node.js</span>
+				</div>
+			</body></html>
+		`;
+			const dom = new JSDOM(html);
+			const meta = extractor.extract(dom.window.document);
+			assert.deepStrictEqual(meta.microdata, [
+				{
+					type: "http://schema.org/Person",
+					name: "Alice",
+					email: ["alice@example.com", "alice.backup@example.com"],
+					skill: ["JavaScript", "TypeScript", "Node.js"],
 				},
 			]);
 		});
