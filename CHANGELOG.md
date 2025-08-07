@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.7.0...webpage-meta-extractor-v0.8.0) (2025-08-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* More usable format for microdata
+
+### Bug Fixes
+
+* More usable format for microdata ([34ea547](https://github.com/humanwhocodes/webpage-meta-extractor/commit/34ea54792ecdc4e0d271cf092410352b8f5fe354))
+
 ## [0.7.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.6.0...webpage-meta-extractor-v0.7.0) (2025-07-29)
 
 
