@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.8.0...webpage-meta-extractor-v0.8.1) (2025-08-08)
+
+
+### Bug Fixes
+
+* Check for incorrect SVG content type ([d01002d](https://github.com/humanwhocodes/webpage-meta-extractor/commit/d01002d578cb93d61c611b8148718be6cccace40))
+* Export WebpageVideo class ([fcd6d75](https://github.com/humanwhocodes/webpage-meta-extractor/commit/fcd6d75db221513537b6a8a8daf62291d3df486c))
+
 ## [0.8.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.7.0...webpage-meta-extractor-v0.8.0) (2025-08-07)
 
 
