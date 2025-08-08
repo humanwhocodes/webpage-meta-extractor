@@ -95,6 +95,7 @@ console.log(meta.microdata);
     - `href` (string): The href attribute
     - `sizes` (string, optional): The sizes attribute
 - `favicon` — Favicon URL (string, selected by preference: SVG > PNG 32x32+ > ICO > fallback)
+- `favicon` — Favicon URL (string, selected by preference: SVG > PNG 32x32+ > ICO > fallback). Note: In addition to the correct SVG MIME type `image/svg+xml`, this library also treats the incorrect but sometimes used `image/svg` as SVG for improved compatibility.
 - `title` — Page title (string or undefined)
 - `description` — Page description (string or undefined)
 - `image` — Page image URL (string or undefined)

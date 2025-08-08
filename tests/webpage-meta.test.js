@@ -180,6 +180,19 @@ describe("WebpageMeta favicons and favicon getter", () => {
 		assert.strictEqual(meta.favicon, "/favicon-32.png");
 	});
 
+	it("should treat content-type image/svg as SVG (compat)", () => {
+		const html = `
+			<html><head>
+				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+				<link rel="icon" type="image/svg" href="/favicon.svg" />
+				<link rel="shortcut icon" href="/favicon.ico" />
+			</head></html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.favicon, "/favicon.svg");
+	});
+
 	it("should prefer PNG over ICO if no SVG or large PNG", () => {
 		const html = `
 			<html><head>

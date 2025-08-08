@@ -76,7 +76,11 @@ export class WebpageMeta {
 	get favicon() {
 		// Prefer SVG
 		const svg = this.favicons.find(
-			f => f.type === "image/svg+xml" || f.extname === ".svg",
+			f =>
+				f.type === "image/svg+xml" ||
+				// Some sites incorrectly use image/svg; treat it as SVG
+				f.type === "image/svg" ||
+				f.extname === ".svg",
 		);
 		if (svg) {
 			return svg.href;
