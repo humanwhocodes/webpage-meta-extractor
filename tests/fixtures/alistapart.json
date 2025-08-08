@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "article:modified_time": [
+      "2025-07-23T15:03:47+00:00"
+    ],
+    "article:published_time": [
+      "2025-07-23T14:10:22+00:00"
+    ],
+    "description": [
+      "“The relationship between a Design Manager and Lead Designer isn’t about dividing territories. It’s about multiplying impact. When both roles understand they’re tending to different aspects of the same healthy organism, magic happens.”"
+    ],
+    "monetization": [
+      "$ilp.uphold.com/Kh7NgDU9kqp3"
+    ],
+    "msapplication-TileImage": [
+      "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=270%2C270&ssl=1"
+    ],
+    "og:description": [
+      "“The relationship between a Design Manager and Lead Designer isn’t about dividing territories. It’s about multiplying impact. When both roles understand they’re tending to different aspects of the …"
+    ],
+    "og:image": [
+      "https://i0.wp.com/alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg?fit=1200%2C678&ssl=1"
+    ],
+    "og:image:alt": [
+      "Janus, the two-faced Roman god. Illustration by Tom Shannon for A List Apart."
+    ],
+    "og:image:height": [
+      "678"
+    ],
+    "og:image:width": [
+      "1200"
+    ],
+    "og:locale": [
+      "en_US"
+    ],
+    "og:site_name": [
+      "A List Apart"
+    ],
+    "og:title": [
+      "An Holistic Framework for Shared Design Leadership"
+    ],
+    "og:type": [
+      "article"
+    ],
+    "og:url": [
+      "https://alistapart.com/article/an-holistic-framework-for-shared-design-leadership/"
+    ],
+    "robots": [
+      "max-image-preview:large"
+    ],
+    "twitter:card": [
+      "summary_large_image"
+    ],
+    "twitter:image": [
+      "https://i0.wp.com/alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg?fit=1200%2C678&ssl=1&w=640"
+    ],
+    "twitter:image:alt": [
+      "Janus, the two-faced Roman god. Illustration by Tom Shannon for A List Apart."
+    ],
+    "twitter:site": [
+      "@alistapart"
+    ],
+    "twitter:text:title": [
+      "An Holistic Framework for Shared Design Leadership"
+    ],
+    "viewport": [
+      "width=device-width, initial-scale=1"
+    ]
+  },
+  "other": {
+    "firstHeading": "An Holistic Framework for Shared Design Leadership",
+    "icon": "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=32%2C32&ssl=1",
+    "title": "An Holistic Framework for Shared Design Leadership – A List Apart"
+  },
+  "feeds": [
+    {
+      "href": "https://alistapart.com/main/feed/",
+      "title": "A List Apart » Feed",
+      "type": "application/rss+xml"
+    },
+    {
+      "href": "https://alistapart.com/wp-json/wp/v2/article/7175031",
+      "title": "JSON",
+      "type": "application/json"
+    }
+  ],
+  "images": [
+    {
+      "url": "https://i0.wp.com/alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg?fit=1200%2C678&ssl=1",
+      "width": 1200,
+      "height": 678,
+      "alt": "Janus, the two-faced Roman god. Illustration by Tom Shannon for A List Apart."
+    }
+  ],
+  "favicons": [
+    {
+      "rel": "icon",
+      "href": "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=32%2C32&ssl=1",
+      "sizes": "32x32"
+    },
+    {
+      "rel": "icon",
+      "href": "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=192%2C192&ssl=1",
+      "sizes": "192x192"
+    }
+  ],
+  "videos": [],
+  "jsonld": [],
+  "microdata": [
+    {
+      "type": "http://schema.org/Article",
+      "image": {
+        "type": "http://schema.org/ImageObject",
+        "contentUrl": "https://alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg",
+        "contributor": {
+          "type": "http://schema.org/Person"
+        }
+      },
+      "headline": "An Holistic Framework for Shared Design Leadership",
+      "author": [
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/michelferreira/",
+          "name": "Michel Ferreira"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/liam-nugent/",
+          "name": "Liam Nugent"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/gerry-duffy/",
+          "name": "Gerry Duffy"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/colineagan/",
+          "name": "Colin Eagan"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/jeffmacintyre/",
+          "name": "Jeffrey MacIntyre"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/stegrainer/",
+          "name": "Ste Grainer"
+        },
+        {
+          "type": "http://schema.org/Person",
+          "url": "https://alistapart.com/author/agustafson/",
+          "name": "Aaron Gustafson"
+        }
+      ]
+    },
+    {
+      "type": "http://schema.org/ImageObject"
+    },
+    {
+      "type": "http://schema.org/SiteNavigationElement",
+      "url": [
+        "https://alistapart.com",
+        "https://alistapart.com/articles/",
+        "https://alistapart.com/events/",
+        "https://alistapart.com/topics/",
+        "https://alistapart.com/about/contribute/",
+        "https://alistapart.com/it"
+      ],
+      "name": [
+        "Home",
+        "Articles",
+        "Events",
+        "Topics",
+        "Write for Us",
+        "Language (English) ",
+        "Italian"
+      ]
+    },
+    {
+      "type": "https://schema.org/WebPage",
+      "copyrightYear": " 1998–2025",
+      "copyrightHolder": " A List Apart & Our Authors",
+      "url": [
+        "https://alistapart.com/about/copyright/",
+        "https://alistapart.com/about/privacy-policy/",
+        "https://webtype.com/",
+        "http://aneventapart.com/",
+        "http://abookapart.com/"
+      ]
+    },
+    {
+      "type": "http://schema.org/SiteNavigationElement",
+      "url": [
+        "https://alistapart.com/about/",
+        "https://alistapart.com/authors/",
+        "https://alistapart.com/about/masthead/",
+        "https://alistapart.com/about/style-guide/",
+        "https://alistapart.com/contact/",
+        "https://alistapart.com/about/sponsor/",
+        "",
+        "https://alistapart.com/about/rss-feed/",
+        "https://alistapart.com/email-signup/",
+        "https://www.facebook.com/alistapart",
+        "https://www.twitter.com/alistapart"
+      ]
+    }
+  ],
+  "canonicalUrl": "https://alistapart.com/article/an-holistic-framework-for-shared-design-leadership/",
+  "title": "An Holistic Framework for Shared Design Leadership",
+  "description": "“The relationship between a Design Manager and Lead Designer isn’t about dividing territories. It’s about multiplying impact. When both roles understand they’re tending to different aspects of the …",
+  "image": "https://i0.wp.com/alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg?fit=1200%2C678&ssl=1",
+  "url": "https://alistapart.com/article/an-holistic-framework-for-shared-design-leadership/",
+  "siteName": "A List Apart",
+  "openGraphObject": {
+    "published_time": "2025-07-23T14:10:22+00:00",
+    "modified_time": "2025-07-23T15:03:47+00:00"
+  },
+  "favicon": "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=32%2C32&ssl=1"
+}

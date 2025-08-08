@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "al:android:app_name": [
+      "Vimeo"
+    ],
+    "al:android:package": [
+      "com.vimeo.android.videoapp"
+    ],
+    "al:android:url": [
+      "vimeo://app.vimeo.com/videos/1094906074"
+    ],
+    "al:ios:app_name": [
+      "Vimeo"
+    ],
+    "al:ios:app_store_id": [
+      "425194759"
+    ],
+    "al:ios:url": [
+      "vimeo://app.vimeo.com/videos/1094906074"
+    ],
+    "al:web:should_fallback": [
+      "true"
+    ],
+    "description": [
+      "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute."
+    ],
+    "fb:app_id": [
+      "19884028963"
+    ],
+    "msapplication-TileColor": [
+      "#00adef"
+    ],
+    "msapplication-TileImage": [
+      "https://i.vimeocdn.com/favicon/main-touch_144"
+    ],
+    "og:description": [
+      "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute."
+    ],
+    "og:image": [
+      "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us"
+    ],
+    "og:image:height": [
+      "692"
+    ],
+    "og:image:secure_url": [
+      "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us"
+    ],
+    "og:image:type": [
+      "image/webp"
+    ],
+    "og:image:width": [
+      "1280"
+    ],
+    "og:site_name": [
+      "Vimeo"
+    ],
+    "og:title": [
+      "The Arbiter in Best of Vimeo Staff Picks"
+    ],
+    "og:type": [
+      "video.other"
+    ],
+    "og:updated_time": [
+      "2025-08-08T09:26:02-04:00"
+    ],
+    "og:url": [
+      "https://vimeo.com/channels/bestofstaffpicks/1094906074"
+    ],
+    "og:video:height": [
+      "692"
+    ],
+    "og:video:secure_url": [
+      "https://player.vimeo.com/video/1094906074?autoplay=1&h=7e9ea0dae9"
+    ],
+    "og:video:type": [
+      "text/html"
+    ],
+    "og:video:url": [
+      "https://player.vimeo.com/video/1094906074?autoplay=1&h=7e9ea0dae9"
+    ],
+    "og:video:width": [
+      "1280"
+    ],
+    "twitter:app:id:googleplay": [
+      "com.vimeo.android.videoapp"
+    ],
+    "twitter:app:id:ipad": [
+      "425194759"
+    ],
+    "twitter:app:id:iphone": [
+      "425194759"
+    ],
+    "twitter:app:name:googleplay": [
+      "Vimeo"
+    ],
+    "twitter:app:name:ipad": [
+      "Vimeo"
+    ],
+    "twitter:app:name:iphone": [
+      "Vimeo"
+    ],
+    "twitter:app:url:googleplay": [
+      "vimeo://app.vimeo.com/videos/1094906074"
+    ],
+    "twitter:app:url:ipad": [
+      "vimeo://app.vimeo.com/videos/1094906074"
+    ],
+    "twitter:app:url:iphone": [
+      "vimeo://app.vimeo.com/videos/1094906074"
+    ],
+    "twitter:card": [
+      "player"
+    ],
+    "twitter:description": [
+      "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute."
+    ],
+    "twitter:image": [
+      "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us"
+    ],
+    "twitter:player": [
+      "https://player.vimeo.com/video/1094906074?h=7e9ea0dae9"
+    ],
+    "twitter:player:height": [
+      "692"
+    ],
+    "twitter:player:width": [
+      "1280"
+    ],
+    "twitter:site": [
+      "@vimeo",
+      "@vimeo"
+    ],
+    "twitter:title": [
+      "The Arbiter in Best of Vimeo Staff Picks"
+    ],
+    "viewport": [
+      "width=device-width, initial-scale=1.0",
+      "width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes"
+    ]
+  },
+  "other": {
+    "firstHeading": "More stuff",
+    "shortcut icon": "https://f.vimeocdn.com/images_v6/favicon.ico?576149c6ad24dc9423024c01e84b086ab10ee55a",
+    "title": "The Arbiter in Best of Vimeo Staff Picks on Vimeo"
+  },
+  "feeds": [],
+  "images": [
+    {
+      "url": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
+      "secureUrl": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
+      "type": "image/webp",
+      "width": 1280,
+      "height": 692
+    }
+  ],
+  "favicons": [
+    {
+      "rel": "shortcut icon",
+      "href": "https://f.vimeocdn.com/images_v6/favicon.ico?576149c6ad24dc9423024c01e84b086ab10ee55a"
+    }
+  ],
+  "videos": [
+    {
+      "url": "https://player.vimeo.com/video/1094906074?autoplay=1&h=7e9ea0dae9",
+      "secureUrl": "https://player.vimeo.com/video/1094906074?autoplay=1&h=7e9ea0dae9",
+      "type": "text/html",
+      "width": 1280,
+      "height": 692
+    }
+  ],
+  "jsonld": [
+    {
+      "url": "https://vimeo.com/channels/bestofstaffpicks/1094906074",
+      "thumbnailUrl": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
+      "embedUrl": "https://player.vimeo.com/video/1094906074?h=7e9ea0dae9",
+      "name": "The Arbiter in Best of Vimeo Staff Picks",
+      "description": "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute.",
+      "height": 2076,
+      "width": 3840,
+      "playerType": "HTML5 Flash",
+      "videoQuality": "HD",
+      "uploadDate": "2025-06-20T03:24:19+00:00",
+      "dateModified": "2025-08-08T13:26:02+00:00",
+      "thumbnail": {
+        "@type": "ImageObject",
+        "url": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
+        "width": 1280,
+        "height": 692
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Kati Skelton",
+        "url": "https://vimeo.com/katiskelton",
+        "bio": "kati dot skelton at gmail dot com",
+        "identifier": 4399268,
+        "image": "https://i.vimeocdn.com/portrait/12019145_120x120?sig=032440104c548de6fd68f262d9c89c60b78d1ae51eee69cb841d472acd14e2ef&v=1&region=us",
+        "interactionStatistic": [
+          {
+            "@type": "InteractionCounter",
+            "interactionType": "https://schema.org/FollowAction",
+            "userInteractionCount": 1079
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "ViewAction",
+        "target": "vimeo://app.vimeo.com/videos/1094906074"
+      },
+      "duration": "PT00H14M06S",
+      "interactionStatistic": [
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/CommentAction",
+          "userInteractionCount": 4
+        },
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/LikeAction",
+          "userInteractionCount": 125
+        },
+        {
+          "@type": "InteractionCounter",
+          "interactionType": "http://schema.org/WatchAction",
+          "userInteractionCount": 36467
+        }
+      ],
+      "@type": "VideoObject",
+      "@context": "http://schema.org"
+    },
+    {
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@id": "https://vimeo.com/katiskelton",
+            "name": "Kati Skelton"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@id": "https://vimeo.com/katiskelton/videos",
+            "name": "Videos"
+          }
+        }
+      ],
+      "@type": "BreadcrumbList",
+      "@context": "http://schema.org"
+    }
+  ],
+  "microdata": [],
+  "canonicalUrl": "https://vimeo.com/1094906074",
+  "title": "The Arbiter in Best of Vimeo Staff Picks",
+  "description": "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute.",
+  "image": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
+  "url": "https://vimeo.com/channels/bestofstaffpicks/1094906074",
+  "siteName": "Vimeo",
+  "openGraphObject": {},
+  "favicon": "https://f.vimeocdn.com/images_v6/favicon.ico?576149c6ad24dc9423024c01e84b086ab10ee55a"
+}

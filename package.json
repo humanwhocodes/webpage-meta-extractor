@@ -43,6 +43,7 @@
     "fmt": "prettier --write .",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
+    "test:build": "node tests/helpers/update-fixtures.mjs",
     "test": "mocha tests/**/*.{js,mjs} --exit --forbid-only",
     "test:jsr": "npx jsr@latest publish --dry-run",
     "test:attw": "attw --pack --profile esm-only"
