@@ -1,6 +1,6 @@
 {
   "name": "@humanwhocodes/webpage-meta-extractor",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "exports": "./dist/index.js",
   "publish": {
     "include": [
