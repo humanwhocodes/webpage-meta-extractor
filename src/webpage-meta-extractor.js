@@ -253,12 +253,6 @@ export class WebpageMetaExtractor {
 					new WebpageFavicon(href, { rel, type, sizes }),
 				);
 			}
-			if (rel === "icon" && !result.other.has("icon")) {
-				result.other.set("icon", href);
-			}
-			if (rel === "shortcut icon" && !result.other.has("shortcut icon")) {
-				result.other.set("shortcut icon", href);
-			}
 		}
 
 		for (const tag of metaTags) {
@@ -343,12 +337,12 @@ export class WebpageMetaExtractor {
 
 		const titleTag = document.querySelector("title");
 		if (titleTag && titleTag.textContent) {
-			result.other.set("title", titleTag.textContent);
+			result._title = titleTag.textContent;
 		}
 
 		const h1Tag = document.querySelector("h1");
 		if (h1Tag && h1Tag.textContent) {
-			result.other.set("firstHeading", h1Tag.textContent);
+			result._firstHeading = h1Tag.textContent;
 		}
 
 		// Extract feeds from <link rel="alternate" type="application/rss+xml"> or similar

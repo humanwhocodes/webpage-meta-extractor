@@ -67,11 +67,6 @@
       "width=device-width, initial-scale=1"
     ]
   },
-  "other": {
-    "firstHeading": "An Holistic Framework for Shared Design Leadership",
-    "icon": "https://i0.wp.com/alistapart.com/wp-content/uploads/2019/03/cropped-icon_navigation-laurel-512.jpg?fit=32%2C32&ssl=1",
-    "title": "An Holistic Framework for Shared Design Leadership – A List Apart"
-  },
   "feeds": [
     {
       "href": "https://alistapart.com/main/feed/",
@@ -208,6 +203,8 @@
     }
   ],
   "canonicalUrl": "https://alistapart.com/article/an-holistic-framework-for-shared-design-leadership/",
+  "_title": "An Holistic Framework for Shared Design Leadership – A List Apart",
+  "_firstHeading": "An Holistic Framework for Shared Design Leadership",
   "title": "An Holistic Framework for Shared Design Leadership",
   "description": "“The relationship between a Design Manager and Lead Designer isn’t about dividing territories. It’s about multiplying impact. When both roles understand they’re tending to different aspects of the …",
   "image": "https://i0.wp.com/alistapart.com/wp-content/uploads/2025/07/janus-roman-god-two-faces.jpg?fit=1200%2C678&ssl=1",

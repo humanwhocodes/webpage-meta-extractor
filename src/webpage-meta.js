@@ -27,10 +27,16 @@ export class WebpageMeta {
 	meta = new Map();
 
 	/**
-	 * Other extracted data (icon, shortcut icon, <title>, firstHeading).
-	 * @type {Map<string, string>}
+	 * The title from the <title> tag, if found.
+	 * @type {string|undefined}
 	 */
-	other = new Map();
+	_title;
+
+	/**
+	 * The first <h1> heading text, if found.
+	 * @type {string|undefined}
+	 */
+	_firstHeading;
 
 	/**
 	 * Feeds discovered in the page.
@@ -130,15 +136,9 @@ export class WebpageMeta {
 			return ico.href;
 		}
 
-		// Fallback to previous logic
-		const icon = this.other.get("icon");
-		if (icon) {
-			return icon;
-		}
-
-		const shortcut = this.other.get("shortcut icon");
-		if (shortcut) {
-			return shortcut;
+		// Fallback to any favicon if present
+		if (this.favicons.length > 0) {
+			return this.favicons[0].href;
 		}
 
 		return "/favicon.ico";
@@ -164,14 +164,12 @@ export class WebpageMeta {
 			return meta[0];
 		}
 
-		const otherTitle = this.other.get("title");
-		if (otherTitle) {
-			return otherTitle;
+		if (this._title) {
+			return this._title;
 		}
 
-		const firstHeading = this.other.get("firstHeading");
-		if (firstHeading) {
-			return firstHeading;
+		if (this._firstHeading) {
+			return this._firstHeading;
 		}
 
 		return undefined;

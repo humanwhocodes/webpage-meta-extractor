@@ -28,7 +28,6 @@ function serializeMeta(meta) {
 		});
 	return {
 		meta: mapToObject(meta.meta),
-		other: mapToObject(meta.other),
 		feeds: simplify(meta.feeds),
 		images: simplify(meta.images),
 		favicons: simplify(meta.favicons),
@@ -36,6 +35,8 @@ function serializeMeta(meta) {
 		jsonld: meta.jsonld,
 		microdata: meta.microdata,
 		canonicalUrl: meta.canonicalUrl,
+		_title: meta._title,
+		_firstHeading: meta._firstHeading,
 		title: meta.title,
 		description: meta.description,
 		image: meta.image,
