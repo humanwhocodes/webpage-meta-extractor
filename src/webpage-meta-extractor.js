@@ -336,13 +336,11 @@ export class WebpageMetaExtractor {
 		}
 
 		const titleTag = document.querySelector("title");
-		if (titleTag && titleTag.textContent) {
-			result._title = titleTag.textContent;
-		}
+		const titleTagText = titleTag?.textContent || undefined;
 
 		const h1Tag = document.querySelector("h1");
 		if (h1Tag && h1Tag.textContent) {
-			result._firstHeading = h1Tag.textContent;
+			result.firstHeading = h1Tag.textContent;
 		}
 
 		// Extract feeds from <link rel="alternate" type="application/rss+xml"> or similar
@@ -388,6 +386,26 @@ export class WebpageMetaExtractor {
 			const item = extractMicrodataItem(itemElem);
 			if (item) {
 				result.microdata.push(item);
+			}
+		}
+
+		// Compute title with proper priority: og:title, twitter:title, title meta, <title> tag, first <h1>
+		const ogTitle = result.meta.get("og:title");
+		if (ogTitle && ogTitle.length) {
+			result.title = ogTitle[0];
+		} else {
+			const twTitle = result.meta.get("twitter:title");
+			if (twTitle && twTitle.length) {
+				result.title = twTitle[0];
+			} else {
+				const metaTitle = result.meta.get("title");
+				if (metaTitle && metaTitle.length) {
+					result.title = metaTitle[0];
+				} else if (titleTagText) {
+					result.title = titleTagText;
+				} else if (result.firstHeading) {
+					result.title = result.firstHeading;
+				}
 			}
 		}
 

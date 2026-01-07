@@ -27,16 +27,16 @@ export class WebpageMeta {
 	meta = new Map();
 
 	/**
-	 * The title from the <title> tag, if found.
+	 * The title of the page, determined by Open Graph, Twitter Card, meta tags, <title>, or first <h1>.
 	 * @type {string|undefined}
 	 */
-	_title;
+	title;
 
 	/**
 	 * The first <h1> heading text, if found.
 	 * @type {string|undefined}
 	 */
-	_firstHeading;
+	firstHeading;
 
 	/**
 	 * Feeds discovered in the page.
@@ -142,37 +142,6 @@ export class WebpageMeta {
 		}
 
 		return "/favicon.ico";
-	}
-
-	/**
-	 * The title of the page, determined by Open Graph, Twitter Card, meta tags, <title>, or first <h1>.
-	 * @returns {string|undefined} The title if found, otherwise undefined.
-	 */
-	get title() {
-		const og = this.meta.get("og:title");
-		if (og && og.length) {
-			return og[0];
-		}
-
-		const tw = this.meta.get("twitter:title");
-		if (tw && tw.length) {
-			return tw[0];
-		}
-
-		const meta = this.meta.get("title");
-		if (meta && meta.length) {
-			return meta[0];
-		}
-
-		if (this._title) {
-			return this._title;
-		}
-
-		if (this._firstHeading) {
-			return this._firstHeading;
-		}
-
-		return undefined;
 	}
 
 	/**
