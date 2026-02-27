@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.9.0](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.8.1...webpage-meta-extractor-v0.9.0) (2026-02-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Replace 'other' map with title and firstHeading properties ([#13](https://github.com/humanwhocodes/webpage-meta-extractor/issues/13))
+
+### Features
+
+* Replace 'other' map with title and firstHeading properties ([#13](https://github.com/humanwhocodes/webpage-meta-extractor/issues/13)) ([803b174](https://github.com/humanwhocodes/webpage-meta-extractor/commit/803b17478802011f6a468eb0eb40363f4247452b))
+
 ## [0.8.1](https://github.com/humanwhocodes/webpage-meta-extractor/compare/webpage-meta-extractor-v0.8.0...webpage-meta-extractor-v0.8.1) (2025-08-08)
 
 
