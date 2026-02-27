@@ -27,10 +27,16 @@ export class WebpageMeta {
 	meta = new Map();
 
 	/**
-	 * Other extracted data (icon, shortcut icon, <title>, firstHeading).
-	 * @type {Map<string, string>}
+	 * The title of the page, determined by Open Graph, Twitter Card, meta tags, <title>, or first <h1>.
+	 * @type {string|undefined}
 	 */
-	other = new Map();
+	title;
+
+	/**
+	 * The first <h1> heading text, if found.
+	 * @type {string|undefined}
+	 */
+	firstHeading;
 
 	/**
 	 * Feeds discovered in the page.
@@ -130,51 +136,12 @@ export class WebpageMeta {
 			return ico.href;
 		}
 
-		// Fallback to previous logic
-		const icon = this.other.get("icon");
-		if (icon) {
-			return icon;
-		}
-
-		const shortcut = this.other.get("shortcut icon");
-		if (shortcut) {
-			return shortcut;
+		// Fallback to any favicon if present
+		if (this.favicons.length > 0) {
+			return this.favicons[0].href;
 		}
 
 		return "/favicon.ico";
-	}
-
-	/**
-	 * The title of the page, determined by Open Graph, Twitter Card, meta tags, <title>, or first <h1>.
-	 * @returns {string|undefined} The title if found, otherwise undefined.
-	 */
-	get title() {
-		const og = this.meta.get("og:title");
-		if (og && og.length) {
-			return og[0];
-		}
-
-		const tw = this.meta.get("twitter:title");
-		if (tw && tw.length) {
-			return tw[0];
-		}
-
-		const meta = this.meta.get("title");
-		if (meta && meta.length) {
-			return meta[0];
-		}
-
-		const otherTitle = this.other.get("title");
-		if (otherTitle) {
-			return otherTitle;
-		}
-
-		const firstHeading = this.other.get("firstHeading");
-		if (firstHeading) {
-			return firstHeading;
-		}
-
-		return undefined;
 	}
 
 	/**

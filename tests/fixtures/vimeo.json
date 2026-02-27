@@ -138,11 +138,6 @@
       "width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes"
     ]
   },
-  "other": {
-    "firstHeading": "More stuff",
-    "shortcut icon": "https://f.vimeocdn.com/images_v6/favicon.ico?576149c6ad24dc9423024c01e84b086ab10ee55a",
-    "title": "The Arbiter in Best of Vimeo Staff Picks on Vimeo"
-  },
   "feeds": [],
   "images": [
     {
@@ -253,6 +248,7 @@
   "microdata": [],
   "canonicalUrl": "https://vimeo.com/1094906074",
   "title": "The Arbiter in Best of Vimeo Staff Picks",
+  "firstHeading": "More stuff",
   "description": "Two teams of men compete in a game of their own invention. When the game begins to go awry, an arbiter steps in to help them solve their dispute.",
   "image": "https://i.vimeocdn.com/video/2028843148-32c560674a50d242ddb812dfe21eda383d858192e996689866e0fb45c5a96a1c-d?f=webp&region=us",
   "url": "https://vimeo.com/channels/bestofstaffpicks/1094906074",
