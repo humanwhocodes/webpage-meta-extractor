@@ -60,6 +60,22 @@ describe("WebpageMeta property getters", () => {
 		assert.strictEqual(meta.title, "Meta Title");
 	});
 
+	it("should resolve title from <title> inside <main> when <head> is empty", () => {
+		const html = `
+			<html>
+				<head></head>
+				<main>
+					<title>Main Title</title>
+					<h1>Main Heading</h1>
+				</main>
+			</html>
+		`;
+		const dom = new JSDOM(html);
+		const meta = extractor.extract(dom.window.document);
+		assert.strictEqual(meta.title, "Main Title");
+		assert.strictEqual(meta.firstHeading, "Main Heading");
+	});
+
 	it("should resolve description from og:description, twitter:description, then description", () => {
 		const html = `
 			<html><head>
